@@ -186,56 +186,6 @@ function ScreenOtp({ error }) {
   );
 }
 
-// 05 - Reset device passcode (used when the device passcode is forgotten)
-function ScreenResetPasscode() {
-  return (
-    <Phone>
-      <Header title="" />
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", padding: "0 24px 24px" }}>
-        <div style={{
-          width: 56, height: 56, borderRadius: 16,
-          background: "var(--primary-soft)", color: "var(--primary)",
-          display: "inline-flex", alignItems: "center", justifyContent: "center",
-          marginBottom: 16,
-        }}>
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/><path d="M12 15v2"/></svg>
-        </div>
-
-        <div className="h1" style={{ marginBottom: 6 }}>Reset passcode</div>
-        <div className="muted" style={{ fontSize: 14, marginBottom: 24 }}>
-          Confirm your account password, then choose a new 4-digit passcode for <span style={{ color: "var(--foreground)", fontWeight: 500 }}>PixC Lyt</span>.
-        </div>
-
-        <label className="field-label">Account password</label>
-        <input className="input" type="password" placeholder="Enter account password" />
-
-        <label className="field-label" style={{ marginTop: 14 }}>New device passcode</label>
-        <div style={{ display: "flex", gap: 8 }}>
-          {[0,1,2,3].map(i => (
-            <div key={i} style={{
-              flex: 1, height: 56,
-              border: `1px solid ${i === 0 ? "var(--ring)" : "var(--input)"}`,
-              borderRadius: 10,
-              display: "flex", alignItems: "center", justifyContent: "center",
-              fontSize: 22, fontWeight: 500,
-              boxShadow: i === 0 ? "0 0 0 3px rgba(var(--primary-rgb),.18)" : undefined,
-              fontFamily: "Geist Mono, monospace",
-            }}/>
-          ))}
-        </div>
-        <div className="muted small" style={{ marginTop: 8 }}>You'll be asked to confirm the new passcode on the next step.</div>
-
-        <button className="btn btn-primary btn-lg btn-block" style={{ marginTop: 20 }}>Continue</button>
-
-        <div style={{ flex: 1 }}/>
-        <div className="muted small" style={{ textAlign: "center" }}>
-          Don't remember the account either? <span style={{ color: "var(--foreground)", fontWeight: 500 }}>Contact support</span>
-        </div>
-      </div>
-    </Phone>
-  );
-}
-
 // 06 - Profile setup (replaces "additional info")
 function ScreenProfileSetup() {
   return (
@@ -273,4 +223,4 @@ function ScreenProfileSetup() {
   );
 }
 
-Object.assign(window, { ScreenSplash, ScreenWalkthrough, ScreenSignIn, ScreenOtp, ScreenResetPasscode, ScreenProfileSetup });
+Object.assign(window, { ScreenSplash, ScreenWalkthrough, ScreenSignIn, ScreenOtp, ScreenProfileSetup });

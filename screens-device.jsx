@@ -1138,90 +1138,41 @@ function ScreenLightSyncSetup() {
           })}
         </div>
 
+        {/* PixC+ exclusive sync modes */}
+        <div className="muted small" style={{ textTransform: "uppercase", letterSpacing: ".06em", fontWeight: 500, marginBottom: 8 }}>Multi-device · PixC+</div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 18 }}>
+          {[
+            { id: "combo",   t: "Combination Sync",       s: "Pair multiple devices in one sync session.",
+              icon: <i className="fa-solid fa-layer-group" style={{ fontSize: 16 }}/> },
+            { id: "grouped", t: "Grouped Light Syncing",  s: "Sync a room or group as one target.",
+              icon: <i className="fa-solid fa-object-group" style={{ fontSize: 16 }}/> },
+          ].map(m => (
+            <button key={m.id} className="card" style={{
+              padding: 14, display: "flex", alignItems: "center", gap: 12,
+              textAlign: "left", cursor: "pointer", font: "inherit",
+              background: "var(--card)",
+              border: "1px solid var(--border)",
+              color: "var(--foreground)",
+              position: "relative",
+            }}>
+              <div style={{
+                width: 40, height: 40, borderRadius: 12, flex: "0 0 auto",
+                background: "var(--muted)", color: "var(--muted-foreground)",
+                display: "inline-flex", alignItems: "center", justifyContent: "center",
+              }}>{m.icon}</div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 14, fontWeight: 600, display: "flex", alignItems: "center", gap: 8 }}>
+                  {m.t}
+                  {window.LockBadge && <window.LockBadge size="sm"/>}
+                </div>
+                <div className="muted small" style={{ marginTop: 2 }}>{m.s}</div>
+              </div>
+              <svg className="ic-sm chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--muted-foreground)" }}><path d="M9 18l6-6-6-6"/></svg>
+            </button>
+          ))}
+        </div>
+
         <button className="btn btn-primary btn-lg btn-block" disabled={mode === "tv"}>Continue</button>
-      </div>
-      <FigPillNav active="extras"/>
-    </Phone>
-  );
-}
-
-// 2a · TV / HDMI setup — arrangement (behind-TV / around-TV)
-function ScreenLightSyncTV() {
-  const [arrangement, setArrangement] = React.useState("behind");
-  const [resolution, setResolution] = React.useState("4K60");
-  const arrangements = [
-    { id: "behind", t: "Behind the TV",  s: "Strip wraps the TV's back edge." },
-    { id: "around", t: "Behind TV + Other", s: "Strip plus accent bulbs flank the TV." },
-  ];
-  return (
-    <Phone>
-      <Header title="TV · HDMI"/>
-      <div style={{ flex: 1, overflow: "auto", padding: "4px 20px 100px" }}>
-        <StepHeader n={1} label="HDMI hub"/>
-        <div className="card" style={{ marginBottom: 18 }}>
-          <div className="row">
-            <div className="icon-wrap" style={{ background: "var(--primary-soft)", color: "var(--primary)" }}>
-              <svg className="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.85" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M7 10h10M7 14h10"/></svg>
-            </div>
-            <div className="label-wrap"><div className="t">PixC Hub</div><div className="s">Connected · 4 inputs · firmware 2.1.4</div></div>
-            <span className="badge badge-success">Online</span>
-          </div>
-          <div className="row">
-            <div className="icon-wrap" style={{ color: "var(--muted-foreground)" }}>
-              <svg className="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-            </div>
-            <div className="label-wrap"><div className="t">Active input</div><div className="s">HDMI 2 · {resolution} · HDR10</div></div>
-            <svg className="ic-sm chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-          </div>
-        </div>
-
-        <StepHeader n={2} label="Light arrangement"/>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 18 }}>
-          {arrangements.map(a => {
-            const sel = arrangement === a.id;
-            return (
-              <button key={a.id} onClick={() => setArrangement(a.id)} style={{
-                padding: 14, borderRadius: 14,
-                background: sel ? "var(--primary-soft)" : "var(--card)",
-                border: sel ? "1.5px solid var(--primary)" : "1px solid var(--border)",
-                cursor: "pointer", textAlign: "center", font: "inherit", color: "var(--foreground)",
-                display: "flex", flexDirection: "column", gap: 10, alignItems: "center",
-              }}>
-                {/* Diagram */}
-                <div style={{ width: 96, height: 60, borderRadius: 6, background: "var(--muted)", position: "relative", border: "1px solid var(--border)", overflow: "hidden" }}>
-                  {/* TV in middle */}
-                  <div style={{ position: "absolute", left: 16, right: 16, top: 8, bottom: 14, background: "var(--foreground)", borderRadius: 2 }}/>
-                  <div style={{ position: "absolute", left: 36, right: 36, bottom: 4, height: 4, background: "var(--foreground)", opacity: .35, borderRadius: 1 }}/>
-                  {/* Glow */}
-                  {a.id === "behind" && (
-                    <div style={{ position: "absolute", inset: -6, border: "3px solid", borderImage: "linear-gradient(90deg,#a855f7,#06b6d4,#22c55e,#facc15,#ef4444) 1", borderRadius: 8, opacity: .8 }}/>
-                  )}
-                  {a.id === "around" && (
-                    <>
-                      <div style={{ position: "absolute", inset: -3, border: "2px solid #a855f7", borderRadius: 8, opacity: .6 }}/>
-                      <span style={{ position: "absolute", left: 2, top: 2, width: 8, height: 8, borderRadius: 999, background: "#06b6d4", boxShadow: "0 0 6px #06b6d4" }}/>
-                      <span style={{ position: "absolute", right: 2, top: 2, width: 8, height: 8, borderRadius: 999, background: "#facc15", boxShadow: "0 0 6px #facc15" }}/>
-                    </>
-                  )}
-                </div>
-                <div>
-                  <div style={{ fontSize: 13, fontWeight: 600 }}>{a.t}</div>
-                  <div className="muted small" style={{ marginTop: 2 }}>{a.s}</div>
-                </div>
-              </button>
-            );
-          })}
-        </div>
-
-        <StepHeader n={3} label="Calibration"/>
-        <div className="card" style={{ padding: 14, marginBottom: 18, display: "flex", gap: 12, alignItems: "flex-start" }}>
-          <span style={{ width: 32, height: 32, borderRadius: 10, background: "var(--primary-soft)", color: "var(--primary)", display: "inline-flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 12l2 2 4-4"/></svg>
-          </span>
-          <div className="small">A 5-second calibration card will play on your TV so we can map screen edges to your strip's LEDs.</div>
-        </div>
-
-        <button className="btn btn-primary btn-lg btn-block">Calibrate and save</button>
       </div>
       <FigPillNav active="extras"/>
     </Phone>
@@ -2053,7 +2004,7 @@ Object.assign(window, {
   ScreenDeviceColor, ScreenDeviceEffects, ScreenSchedule,
   ScreenAppLock,
   ScreenDeviceSettings, ScreenDeviceExtras,
-  ScreenLightSync, ScreenLightSyncSetup, ScreenLightSyncTV, ScreenLightSyncWireless, ScreenLightSyncAudio,
+  ScreenLightSync, ScreenLightSyncSetup, ScreenLightSyncWireless, ScreenLightSyncAudio,
   ScreenLightSyncSegments, ScreenLightSyncAssociate, ScreenLightSyncPixelLayout,
   ScreenPresets,
   ScreenPalettes, ScreenSegments, ScreenMiscSettings,

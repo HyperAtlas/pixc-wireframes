@@ -337,6 +337,7 @@
 <script type="text/babel" src="screens-new.jsx"></script>
 <script type="text/babel" src="screens-extra2.jsx"></script>
 <script type="text/babel" src="screens-prod.jsx"></script>
+<script type="text/babel" src="screens-subscription.jsx"></script>
 
 <script type="text/babel">
 // ===== Mobile Viewer =====
@@ -446,6 +447,22 @@ const SECTIONS = [
     { id: "generic-error",         label: "Generic error",                  render: () => <ScreenGenericError/> },
     { id: "move-device",           label: "Move device",                    render: () => <ScreenMoveDevice/> },
   ]},
+  { id: "subscription", title: "07 · Subscription (PixC+)", screens: [
+    { id: "paywall",               label: "Paywall · pricing",              render: () => <ScreenPaywall/> },
+    { id: "sub-manage-free",       label: "Subscription · current Free",    render: () => <ScreenSubscriptionManage plan="free"/> },
+    { id: "sub-manage-pro",        label: "Subscription · current PixC+",   render: () => <ScreenSubscriptionManage plan="pro"/> },
+    { id: "sub-cancel",            label: "Subscription · cancel confirm",  render: () => <ScreenCancelConfirm/> },
+    { id: "combination-sync",      label: "Combination Sync (PixC+)",       render: () => <ScreenCombinationSync/> },
+    { id: "grouped-sync",          label: "Grouped Light Syncing (PixC+)",  render: () => <ScreenGroupedLightSync/> },
+    { id: "upsell-homes",          label: "Upsell · 3rd home",              render: () => <ScreenUpsellHomes/> },
+    { id: "upsell-members",        label: "Upsell · 4th member",            render: () => <ScreenUpsellMembers/> },
+    { id: "upsell-automations",    label: "Upsell · 11th automation",       render: () => <ScreenUpsellAutomations/> },
+    { id: "upsell-ai",             label: "Upsell · AI weekly limit",       render: () => <ScreenUpsellAILimit/> },
+    { id: "upsell-energy",         label: "Upsell · energy beyond 14d",     render: () => <ScreenUpsellEnergy/> },
+    { id: "upsell-notifications",  label: "Upsell · notifications past 7d", render: () => <ScreenUpsellNotifications/> },
+    { id: "upsell-combination",    label: "Upsell · Combination Sync",      render: () => <ScreenUpsellCombinationSync/> },
+    { id: "upsell-grouped",        label: "Upsell · Grouped Sync",          render: () => <ScreenUpsellGroupedSync/> },
+  ]},
 ];
 
 const ALL_SCREENS = SECTIONS.flatMap(s => s.screens);
@@ -486,6 +503,7 @@ function ThemeToggle({ theme, setTheme, accent, setAccent }) {
   const isDark = theme === "dark";
   return (
     <div className="m-theme-row">
+      <PlanToggleM/>
       <button
         className="m-icon-btn"
         onClick={() => setTheme(isDark ? "light" : "dark")}
@@ -497,6 +515,32 @@ function ThemeToggle({ theme, setTheme, accent, setAccent }) {
         )}
       </button>
     </div>
+  );
+}
+
+// Free / PixC+ preview toggle for the mobile chrome
+function PlanToggleM() {
+  const [plan, setPlan] = (window.usePixcPlan ? window.usePixcPlan() : ["free", () => {}]);
+  const isPro = plan === "pro";
+  return (
+    <button
+      type="button"
+      onClick={() => setPlan(isPro ? "free" : "pro")}
+      aria-label={isPro ? "Switch to Free preview" : "Switch to PixC+ preview"}
+      style={{
+        height: 26, padding: "0 10px", borderRadius: 999,
+        background: isPro ? "var(--primary)" : "transparent",
+        color: isPro ? "var(--primary-foreground)" : "var(--foreground)",
+        border: isPro ? "1px solid var(--primary)" : "1px solid var(--border)",
+        cursor: "pointer",
+        fontFamily: "inherit", fontSize: 11, fontWeight: 600, letterSpacing: ".04em",
+        display: "inline-flex", alignItems: "center", gap: 5,
+      }}>
+      {isPro && (
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" aria-hidden><path d="M5 16l-2-9 6 4 5-7 5 7 6-4-2 9z"/></svg>
+      )}
+      {isPro ? "PixC+" : "Free"}
+    </button>
   );
 }
 

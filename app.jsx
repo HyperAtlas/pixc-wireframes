@@ -64,7 +64,36 @@ function FloatingThemeToggle({ theme, accent, onTheme, onAccent }) {
             }}/>
         );
       })}
+      <span style={{ width: 1, height: 20, background: "rgba(0,0,0,.08)" }}/>
+      <PlanToggle/>
     </div>
+  );
+}
+
+// Free / PixC+ preview toggle — flips a localStorage key + dispatches an
+// event so plan-aware screens (AI counter, lock badges, etc.) re-render.
+function PlanToggle() {
+  const [plan, setPlan] = (window.usePixcPlan ? window.usePixcPlan() : ["free", () => {}]);
+  const isPro = plan === "pro";
+  return (
+    <button
+      type="button"
+      onClick={() => setPlan(isPro ? "free" : "pro")}
+      title={isPro ? "Switch to Free preview" : "Switch to PixC+ preview"}
+      style={{
+        height: 26, padding: "0 10px", borderRadius: 999,
+        background: isPro ? "#2563eb" : "transparent",
+        color: isPro ? "#ffffff" : "#0a0a0a",
+        border: isPro ? "1px solid #2563eb" : "1px solid rgba(0,0,0,.15)",
+        cursor: "pointer",
+        fontFamily: "inherit", fontSize: 11, fontWeight: 600, letterSpacing: ".04em",
+        display: "inline-flex", alignItems: "center", gap: 5,
+      }}>
+      {isPro && (
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" aria-hidden><path d="M5 16l-2-9 6 4 5-7 5 7 6-4-2 9z"/></svg>
+      )}
+      {isPro ? "PixC+" : "Free"}
+    </button>
   );
 }
 
@@ -195,6 +224,23 @@ function App() {
           <DCArtboard id="ota-failed" label="Firmware update · failed" width={375} height={812}><ScreenOtaFailed/></DCArtboard>
           <DCArtboard id="generic-error" label="Generic error" width={375} height={812}><ScreenGenericError/></DCArtboard>
           <DCArtboard id="move-device" label="Move device" width={375} height={812}><ScreenMoveDevice/></DCArtboard>
+        </DCSection>
+
+        <DCSection id="subscription" title="07 · Subscription (PixC+)">
+          <DCArtboard id="paywall" label="Paywall · pricing" width={375} height={812}><ScreenPaywall/></DCArtboard>
+          <DCArtboard id="sub-manage-free" label="Subscription · current Free" width={375} height={812}><ScreenSubscriptionManage plan="free"/></DCArtboard>
+          <DCArtboard id="sub-manage-pro" label="Subscription · current PixC+" width={375} height={812}><ScreenSubscriptionManage plan="pro"/></DCArtboard>
+          <DCArtboard id="sub-cancel" label="Subscription · cancel confirm" width={375} height={812}><ScreenCancelConfirm/></DCArtboard>
+          <DCArtboard id="combination-sync" label="Combination Sync (PixC+)" width={375} height={812}><ScreenCombinationSync/></DCArtboard>
+          <DCArtboard id="grouped-sync" label="Grouped Light Syncing (PixC+)" width={375} height={812}><ScreenGroupedLightSync/></DCArtboard>
+          <DCArtboard id="upsell-homes" label="Upsell · adding 3rd home" width={375} height={812}><ScreenUpsellHomes/></DCArtboard>
+          <DCArtboard id="upsell-members" label="Upsell · 4th member" width={375} height={812}><ScreenUpsellMembers/></DCArtboard>
+          <DCArtboard id="upsell-automations" label="Upsell · 11th automation" width={375} height={812}><ScreenUpsellAutomations/></DCArtboard>
+          <DCArtboard id="upsell-ai" label="Upsell · AI weekly limit" width={375} height={812}><ScreenUpsellAILimit/></DCArtboard>
+          <DCArtboard id="upsell-energy" label="Upsell · energy beyond 14d" width={375} height={812}><ScreenUpsellEnergy/></DCArtboard>
+          <DCArtboard id="upsell-notifications" label="Upsell · notifications beyond 7d" width={375} height={812}><ScreenUpsellNotifications/></DCArtboard>
+          <DCArtboard id="upsell-combination" label="Upsell · Combination Sync tap" width={375} height={812}><ScreenUpsellCombinationSync/></DCArtboard>
+          <DCArtboard id="upsell-grouped" label="Upsell · Grouped Sync tap" width={375} height={812}><ScreenUpsellGroupedSync/></DCArtboard>
         </DCSection>
 
       </DesignCanvas>

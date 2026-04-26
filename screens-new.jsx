@@ -832,6 +832,11 @@ function ScreenEditRoom() {
 
 // ---- PixC AI — chat-style assistant ----
 function ScreenTwotoAI() {
+  const [plan] = (window.usePixcPlan ? window.usePixcPlan() : ["free", () => {}]);
+  const isPro = plan === "pro";
+  const used = isPro ? 412 : 12;
+  const cap  = isPro ? 1000 : 30;
+
   const messages = [
   { who: "ai", t: "Hi Rayon! I can change scenes, dim or color your lights, or build a routine. What would you like to do?" },
   { who: "me", t: "Make the bedroom feel like sunset." },
@@ -861,6 +866,15 @@ function ScreenTwotoAI() {
         <button className="btn btn-ghost btn-icon-sm" aria-label="More">
           <svg className="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="5" r="1.5" /><circle cx="12" cy="12" r="1.5" /><circle cx="12" cy="19" r="1.5" /></svg>
         </button>
+      </div>
+
+      {/* Quota counter */}
+      <div style={{ padding: "6px 16px 0", display: "flex", alignItems: "center", gap: 8 }}>
+        <span className="mono small" style={{ flex: 1, color: "var(--muted-foreground)", letterSpacing: ".06em" }}>
+          <span style={{ color: "var(--foreground)", fontWeight: 600 }}>{used.toLocaleString()}</span>
+          <span> / {cap.toLocaleString()} this week · resets Mon</span>
+        </span>
+        {!isPro && <window.LockBadge size="sm"/>}
       </div>
 
       {/* Messages */}
@@ -978,6 +992,10 @@ function ScreenTwotoAI() {
 
 // ---- PixC AI · empty (first launch, no history) ----
 function ScreenTwotoAIEmpty() {
+  const [plan] = (window.usePixcPlan ? window.usePixcPlan() : ["free", () => {}]);
+  const isPro = plan === "pro";
+  const cap = isPro ? 1000 : 30;
+
   const ideas = [
   "Set bedroom to a sunset.",
   "Dim everything except hallway.",
@@ -994,6 +1012,14 @@ function ScreenTwotoAIEmpty() {
         <button className="btn btn-ghost btn-icon-sm" aria-label="More">
           <svg className="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="5" r="1.5" /><circle cx="12" cy="12" r="1.5" /><circle cx="12" cy="19" r="1.5" /></svg>
         </button>
+      </div>
+
+      <div style={{ padding: "6px 16px 0", display: "flex", alignItems: "center", gap: 8 }}>
+        <span className="mono small" style={{ flex: 1, color: "var(--muted-foreground)", letterSpacing: ".06em" }}>
+          <span style={{ color: "var(--foreground)", fontWeight: 600 }}>0</span>
+          <span> / {cap.toLocaleString()} this week · resets Mon</span>
+        </span>
+        {!isPro && <window.LockBadge size="sm"/>}
       </div>
 
       <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "0 24px", gap: 18 }}>

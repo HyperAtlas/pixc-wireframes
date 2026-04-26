@@ -229,29 +229,6 @@ function ScreenHome() {
   );
 }
 
-// Empty state when no devices found (NEW)
-function ScreenNoDevices() {
-  return (
-    <Phone>
-      <Header title="Add devices"/>
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", padding: "0 24px 24px", alignItems: "center" }}>
-        <div style={{ width: 220, height: 220, borderRadius: 999, background: "var(--muted)", border: "1px dashed var(--border-strong)", display: "inline-flex", alignItems: "center", justifyContent: "center", marginTop: 32 }}>
-          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--muted-foreground)" }}>
-            <path d="M3 12c5-5 13-5 18 0"/><path d="M6.5 15.5c3-3 8-3 11 0"/><circle cx="12" cy="19" r="1"/>
-          </svg>
-        </div>
-        <div className="h2" style={{ marginTop: 28 }}>No devices found</div>
-        <div className="muted" style={{ fontSize: 14, textAlign: "center", maxWidth: 280, marginTop: 6 }}>
-          Make sure your device is powered on, in pairing mode, and within 10 meters.
-        </div>
-
-        <div style={{ flex: 1 }}/>
-        <button className="btn btn-primary btn-lg btn-block">Try again</button>
-        <button className="btn btn-ghost btn-lg btn-block" style={{ marginTop: 4 }}>Set up manually</button>
-      </div>
-    </Phone>
-  );
-}
 
 // Add room (NEW)
 function ScreenAddRoom() {
@@ -332,4 +309,4 @@ function ScreenAddRoom() {
   );
 }
 
-Object.assign(window, { ScreenHome, ScreenNoDevices, ScreenAddRoom, DeviceCard, RoomChip, DEVICE_ICONS });
+Object.assign(window, { ScreenHome, ScreenAddRoom, DeviceCard, RoomChip, DEVICE_ICONS });
