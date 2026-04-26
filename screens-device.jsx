@@ -1518,6 +1518,28 @@ function ScreenLightSyncSegments({ mode = "tv" }) {
       ];
   const totalLeds = segments.reduce((a, s) => a + s.leds, 0);
 
+  // TV mode: the strip enters at one corner ("start") and traces around in
+  // a chosen direction. The user picks both — START and END markers in the
+  // diagram update accordingly.
+  const [startCorner, setStartCorner] = React.useState("tl"); // tl | tr | br | bl
+  const [clockwise,   setClockwise]   = React.useState(true);
+
+  // Position of START / END markers based on orientation.
+  const cornerStyle = (c) => ({
+    tl: { top: 2,    left: 18,   right: undefined, bottom: undefined },
+    tr: { top: 2,    right: 18,  left:  undefined, bottom: undefined },
+    br: { bottom: 2, right: 18,  left:  undefined, top:    undefined },
+    bl: { bottom: 2, left: 18,   right: undefined, top:    undefined },
+  }[c]);
+  // The strip terminates at the corner that's "one step before" wrapping
+  // back to start in the chosen direction.
+  const endCorner = clockwise
+    ? ({ tl: "bl", tr: "tl", br: "tr", bl: "br" })[startCorner]
+    : ({ tl: "tr", tr: "br", br: "bl", bl: "tl" })[startCorner];
+  const startArrow = clockwise
+    ? ({ tl: "→",  tr: "↓",  br: "←",  bl: "↑"  })[startCorner]
+    : ({ tl: "↓",  tr: "←",  br: "↑",  bl: "→"  })[startCorner];
+
   // TV-wrap preview — strip drawn as 4 colored bars surrounding a TV diagram.
   const tvWrap = (
     <div style={{ position: "relative", width: "100%", maxWidth: 280, height: 170, margin: "0 auto" }}>
@@ -1576,15 +1598,17 @@ function ScreenLightSyncSegments({ mode = "tv" }) {
         }}>{segments[3].name} · {segments[3].leds}</span>
       </div>
 
-      {/* START / END markers — strip starts top-left, ends bottom-left */}
+      {/* START / END markers — driven by orientation state. */}
       <span style={{
-        position: "absolute", top: 2, left: 18, fontSize: 8, fontFamily: "Geist Mono, monospace",
-        color: "var(--muted-foreground)", letterSpacing: ".06em",
-      }}>START →</span>
+        position: "absolute", ...cornerStyle(startCorner),
+        fontSize: 8, fontFamily: "Geist Mono, monospace",
+        color: "var(--primary)", fontWeight: 600, letterSpacing: ".06em",
+      }}>START {startArrow}</span>
       <span style={{
-        position: "absolute", bottom: 2, left: 8, fontSize: 8, fontFamily: "Geist Mono, monospace",
+        position: "absolute", ...cornerStyle(endCorner),
+        fontSize: 8, fontFamily: "Geist Mono, monospace",
         color: "var(--muted-foreground)", letterSpacing: ".06em",
-      }}>← END</span>
+      }}>END</span>
     </div>
   );
 
@@ -1640,7 +1664,83 @@ function ScreenLightSyncSegments({ mode = "tv" }) {
           {mode === "tv" ? tvWrap : flatStrip}
         </div>
 
-        <StepHeader n={2} label="Region mapping"/>
+        {mode === "tv" && (
+          <>
+            <StepHeader n={2} label="Strip orientation"/>
+            <div className="muted small" style={{ marginBottom: 10 }}>
+              Where does the strip enter the TV, and which way does it run?
+            </div>
+            <div className="card" style={{ padding: 14, marginBottom: 18 }}>
+              <div className="muted small" style={{ marginBottom: 8 }}>Start corner</div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 14 }}>
+                {[
+                  { id: "tl", label: "Top-left" },
+                  { id: "tr", label: "Top-right" },
+                  { id: "bl", label: "Bottom-left" },
+                  { id: "br", label: "Bottom-right" },
+                ].map(c => {
+                  const sel = startCorner === c.id;
+                  // mini-TV diagram with a glowing dot at the chosen corner
+                  const dot = {
+                    tl: { top: 6, left: 8 },
+                    tr: { top: 6, right: 8 },
+                    bl: { bottom: 6, left: 8 },
+                    br: { bottom: 6, right: 8 },
+                  }[c.id];
+                  return (
+                    <button key={c.id} onClick={() => setStartCorner(c.id)} style={{
+                      padding: 10, borderRadius: 12, cursor: "pointer", font: "inherit",
+                      border: sel ? "1.5px solid var(--primary)" : "1px solid var(--border)",
+                      background: sel ? "var(--primary-soft)" : "var(--card)",
+                      color: "var(--foreground)",
+                      display: "flex", alignItems: "center", gap: 10,
+                    }}>
+                      <div style={{ position: "relative", width: 38, height: 26, flexShrink: 0 }}>
+                        <div style={{ position: "absolute", inset: "3px 4px 6px", background: "var(--foreground)", borderRadius: 3, opacity: .85 }}/>
+                        <div style={{ position: "absolute", inset: -2, border: "1.5px solid color-mix(in srgb, var(--primary) 50%, transparent)", borderRadius: 5 }}/>
+                        <span style={{
+                          position: "absolute", ...dot, width: 7, height: 7, borderRadius: 999,
+                          background: "var(--primary)", boxShadow: "0 0 6px var(--primary)",
+                        }}/>
+                      </div>
+                      <span style={{ fontSize: 12.5, fontWeight: 600 }}>{c.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div className="muted small" style={{ marginBottom: 8 }}>Direction</div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+                {[
+                  { id: true,  label: "Clockwise",         icon: "↻" },
+                  { id: false, label: "Counter-clockwise", icon: "↺" },
+                ].map(d => {
+                  const sel = clockwise === d.id;
+                  return (
+                    <button key={String(d.id)} onClick={() => setClockwise(d.id)} style={{
+                      padding: "10px 12px", borderRadius: 12, cursor: "pointer", font: "inherit",
+                      border: sel ? "1.5px solid var(--primary)" : "1px solid var(--border)",
+                      background: sel ? "var(--primary-soft)" : "var(--card)",
+                      color: "var(--foreground)",
+                      display: "flex", alignItems: "center", gap: 8,
+                    }}>
+                      <span style={{
+                        width: 26, height: 26, borderRadius: 8, flexShrink: 0,
+                        background: sel ? "var(--primary)" : "var(--muted)",
+                        color: sel ? "var(--primary-foreground)" : "var(--foreground)",
+                        display: "inline-flex", alignItems: "center", justifyContent: "center",
+                        fontSize: 16, fontWeight: 600,
+                      }}>{d.icon}</span>
+                      <span style={{ fontSize: 12.5, fontWeight: 600 }}>{d.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </>
+        )}
+
+        <StepHeader n={mode === "tv" ? 3 : 2} label="Region mapping"/>
         <div className="card" style={{ marginBottom: 18 }}>
           {segments.map((s, i) => (
             <div className="row" key={i}>
