@@ -151,10 +151,24 @@ function ScreenHome({ activeCluster = false, activeFusion = false, serversDown =
             <div className="muted small mono" style={{ marginBottom: 6 }}>Error · CLOUD_UNREACHABLE</div>
             <div className="small">Last successful contact 4 min ago. Local control still works.</div>
           </div>
-          <div style={{ display: "flex", gap: 8, marginTop: 18, width: "100%", maxWidth: 320 }}>
-            <button className="btn btn-primary btn-lg btn-block" style={{ flex: 1 }}>Retry</button>
-            <button className="btn btn-outline btn-lg" style={{ flex: 1 }}>Use local mode</button>
+
+          {/* Auto-reconnect indicator */}
+          <div style={{
+            display: "inline-flex", alignItems: "center", gap: 8,
+            marginTop: 16, padding: "6px 12px",
+            borderRadius: 999,
+            background: "var(--muted)",
+            color: "var(--muted-foreground)",
+          }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ animation: "fx-spin 1.1s linear infinite" }}>
+              <path d="M21 12a9 9 0 1 1-6.2-8.5"/>
+              <path d="M21 4v5h-5"/>
+            </svg>
+            <span className="mono small" style={{ letterSpacing: ".06em" }}>Reconnecting…</span>
+            <span className="mono small" style={{ letterSpacing: ".06em", color: "var(--foreground)", fontVariantNumeric: "tabular-nums" }}>00:38</span>
           </div>
+
+          <button className="btn btn-primary btn-lg btn-block" style={{ width: "100%", maxWidth: 320, marginTop: 14 }}>Retry now</button>
         </div>
       </Phone>
     );

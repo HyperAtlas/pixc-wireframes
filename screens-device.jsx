@@ -267,9 +267,12 @@ function ScreenDeviceColor({ online = true, lightSyncOn = false, locked = false,
               : inCluster ? { kind: "cluster", name: "Living room" }
               : inFusion  ? { kind: "fusion",  name: "Movie night" }
               : null;
+  // When cloud is unreachable, flip the Online pill to Offline · Local
+  // so the user sees the right state at a glance.
+  const effectiveOnline = cloudUnreachable ? false : online;
   return (
     <Phone>
-      <DeviceTopBar online={online} showStatus controllers={controllers} group={group}/>
+      <DeviceTopBar online={effectiveOnline} showStatus controllers={controllers} group={group}/>
 
       {/* Cloud-unreachable banner — local control still works. */}
       {cloudUnreachable && (
@@ -280,12 +283,16 @@ function ScreenDeviceColor({ online = true, lightSyncOn = false, locked = false,
             border: "1px solid rgba(220,38,38,.18)",
             color: "var(--destructive)",
           }}>
-            <span style={{ width: 8, height: 8, borderRadius: 999, background: "var(--destructive)", boxShadow: "0 0 0 4px rgba(220,38,38,.18)" }}/>
+            <span style={{ width: 8, height: 8, borderRadius: 999, background: "var(--destructive)", boxShadow: "0 0 0 4px rgba(220,38,38,.18)", flexShrink: 0 }}/>
             <div style={{ flex: 1, fontSize: 11.5, lineHeight: 1.4 }}>
-              <span style={{ fontWeight: 600 }}>Cloud unreachable</span>
-              <span style={{ opacity: .85 }}> · using local control. AI &amp; remote access paused.</span>
+              <span style={{ fontWeight: 600 }}>Offline · using local control</span>
+              <span style={{ opacity: .85 }}> · Online features are paused till connectivity is restored.</span>
             </div>
-            <button className="btn btn-ghost btn-sm" style={{ height: 24, padding: "0 8px", fontSize: 11, color: "var(--destructive)" }}>Retry</button>
+            <button aria-label="Open Wi-Fi settings" title="Open Wi-Fi settings" className="btn btn-ghost btn-icon-sm" style={{
+              color: "var(--destructive)", flexShrink: 0,
+            }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12.5a10 10 0 0 1 14 0"/><path d="M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19.5" r=".8" fill="currentColor"/></svg>
+            </button>
           </div>
         </div>
       )}
