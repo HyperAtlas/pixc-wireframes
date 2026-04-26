@@ -653,85 +653,50 @@ function ScreenDeviceOffline() {
 // ---- Pairing failed -----------------------------------------------------
 function ScreenPairingFailed() {
   return (
-    <Phone>
-      <Header title="Setup failed"/>
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", padding: "0 24px 24px" }}>
-        <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 18 }}>
-          <div style={{
-            width: 88, height: 88, borderRadius: 999,
-            background: "rgba(220,38,38,.10)", color: "var(--destructive)",
-            display: "inline-flex", alignItems: "center", justifyContent: "center",
-          }}>
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.85" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 17v.01"/></svg>
-          </div>
-          <div style={{ textAlign: "center" }}>
-            <div className="h2">Couldn't pair PixC Lyt</div>
-            <div className="muted" style={{ fontSize: 14, marginTop: 4, maxWidth: 280 }}>
-              The device responded but cloud registration timed out. Your network may be blocking outbound connections to <span className="mono" style={{ color: "var(--foreground)" }}>api.pixc.app</span>.
-            </div>
-          </div>
-
-          <div className="card" style={{ width: "100%", padding: 14, background: "rgba(220,38,38,.05)", border: "1px solid rgba(220,38,38,.2)" }}>
-            <div className="muted small" style={{ textTransform: "uppercase", letterSpacing: ".06em", fontWeight: 500, marginBottom: 6, color: "var(--destructive)" }}>Error · CLOUD_TIMEOUT</div>
-            <div className="small">Reset the device for 10 s and try again, or skip and pair from local control.</div>
-          </div>
-        </div>
-
-        <button className="btn btn-primary btn-lg btn-block">Try again</button>
-        <button className="btn btn-outline btn-lg btn-block" style={{ marginTop: 6 }}>Open troubleshooter</button>
-        <button className="btn btn-ghost btn-lg btn-block" style={{ marginTop: 4, color: "var(--muted-foreground)" }}>Cancel setup</button>
+    <AddDeviceShell
+      title="Setup failed"
+      step={4}
+      hero={<AddDeviceHero state="error" label="Couldn't pair PixC Lyt" sub={<>The device responded but cloud registration timed out. Your network may be blocking outbound connections to <span className="mono" style={{ color: "var(--foreground)" }}>api.pixc.app</span>.</>}/>}
+      footer={
+        <>
+          <button className="btn btn-primary btn-lg btn-block">Try again</button>
+          <button className="btn btn-outline btn-lg btn-block" style={{ marginTop: 6 }}>Open troubleshooter</button>
+          <button className="btn btn-ghost btn-lg btn-block" style={{ marginTop: 4, color: "var(--muted-foreground)" }}>Cancel setup</button>
+        </>
+      }
+    >
+      <div className="card" style={{ marginTop: 6, padding: 14, background: "rgba(220,38,38,.05)", border: "1px solid rgba(220,38,38,.2)" }}>
+        <div className="muted small" style={{ textTransform: "uppercase", letterSpacing: ".06em", fontWeight: 500, marginBottom: 6, color: "var(--destructive)" }}>Error · CLOUD_TIMEOUT</div>
+        <div className="small">Reset the device for 10 s and try again, or skip and pair from local control.</div>
       </div>
-    </Phone>
+    </AddDeviceShell>
   );
 }
 
 // ---- Wi-Fi connect failed -----------------------------------------------
 function ScreenWifiFailed() {
   return (
-    <Phone>
-      <Header title="Wi-Fi setup"/>
-      <div style={{ padding: "0 24px" }}>
-        <div style={{ display: "flex", gap: 4 }}>
-          {[1,2,3,4,5].map(i => (
-            <span key={i} style={{ flex: 1, height: 4, borderRadius: 2, background: i <= 3 ? "var(--foreground)" : "var(--border)" }}/>
-          ))}
+    <AddDeviceShell
+      title="Wi-Fi setup"
+      step={3}
+      hero={<AddDeviceHero state="no-signal" label="Couldn't connect to Wi-Fi" sub={<><span style={{ color: "var(--foreground)", fontWeight: 500 }}>Home_2.4G</span> rejected the password, or the network is out of range of the device.</>}/>}
+      footer={<button className="btn btn-primary btn-lg btn-block">Try again</button>}
+    >
+      <div className="card" style={{ marginTop: 6 }}>
+        <div className="row">
+          <div className="icon-wrap" style={{ background: "rgba(220,38,38,.10)", color: "var(--destructive)" }}>
+            <svg className="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></svg>
+          </div>
+          <div className="label-wrap"><div className="t">Wrong password</div><div className="s">Tap to re-enter</div></div>
+          <svg className="ic-sm chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+        <div className="row">
+          <div className="icon-wrap"><svg className="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12.5a10 10 0 0 1 14 0"/><path d="M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19.5" r=".8" fill="currentColor"/></svg></div>
+          <div className="label-wrap"><div className="t">Use a different network</div></div>
+          <svg className="ic-sm chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
         </div>
       </div>
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", padding: "20px 24px 24px" }}>
-        <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 18 }}>
-          <div style={{
-            width: 88, height: 88, borderRadius: 999,
-            background: "rgba(220,38,38,.10)", color: "var(--destructive)",
-            display: "inline-flex", alignItems: "center", justifyContent: "center",
-          }}>
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.85" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12.5a10 10 0 0 1 14 0"/><path d="M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19.5" r=".9" fill="currentColor" stroke="none"/><path d="M3 3l18 18"/></svg>
-          </div>
-          <div style={{ textAlign: "center" }}>
-            <div className="h2">Couldn't connect to Wi-Fi</div>
-            <div className="muted" style={{ fontSize: 14, marginTop: 4, maxWidth: 300 }}>
-              <span style={{ color: "var(--foreground)", fontWeight: 500 }}>Home_2.4G</span> rejected the password, or the network is out of range of the device.
-            </div>
-          </div>
-
-          <div className="card" style={{ width: "100%" }}>
-            <div className="row">
-              <div className="icon-wrap" style={{ background: "rgba(220,38,38,.10)", color: "var(--destructive)" }}>
-                <svg className="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></svg>
-              </div>
-              <div className="label-wrap"><div className="t">Wrong password</div><div className="s">Tap to re-enter</div></div>
-              <svg className="ic-sm chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-            </div>
-            <div className="row">
-              <div className="icon-wrap"><svg className="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12.5a10 10 0 0 1 14 0"/><path d="M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19.5" r=".8" fill="currentColor"/></svg></div>
-              <div className="label-wrap"><div className="t">Use a different network</div></div>
-              <svg className="ic-sm chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-            </div>
-          </div>
-        </div>
-
-        <button className="btn btn-primary btn-lg btn-block">Try again</button>
-      </div>
-    </Phone>
+    </AddDeviceShell>
   );
 }
 

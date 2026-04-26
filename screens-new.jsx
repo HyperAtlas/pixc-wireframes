@@ -26,8 +26,14 @@ function AddDeviceHero({ label = "Scanning for devices", sub = "Make sure your d
     if (state === "pairing") {
       return { color: "var(--primary)", svg: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ animation: "scan-spin 1.1s linear infinite" }}><path d="M21 12a9 9 0 1 1-6.2-8.5"/></svg> };
     }
+    if (state === "error") {
+      return { color: "var(--destructive)", svg: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><path d="M12 17v.01"/></svg> };
+    }
     return null;
   })();
+  // Failed states desaturate the device chip so the success/scanning
+  // colour pop is reserved for healthy flows.
+  const chipMuted = state === "error" || state === "no-signal";
 
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 18, padding: "32px 0 8px" }}>
@@ -58,7 +64,8 @@ function AddDeviceHero({ label = "Scanning for devices", sub = "Make sure your d
           background: "#0a0a0a", color: "white",
           display: "inline-flex", alignItems: "center", justifyContent: "center",
           border: "1px solid #1f1f1f",
-          boxShadow: "0 10px 28px -10px rgba(0,0,0,.4)"
+          boxShadow: "0 10px 28px -10px rgba(0,0,0,.4)",
+          filter: chipMuted ? "saturate(.55)" : undefined,
         }}>
           <RgbMark size={56} />
           {showProbe && (
