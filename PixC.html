@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>PixC — Smart home</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+<style>
+  :root {
+    /* shadcn — slate-ish neutral system */
+    --background: #ffffff;
+    --foreground: #09090b;
+    --muted: #f4f4f5;
+    --muted-foreground: #71717a;
+    --border: #e4e4e7;
+    --border-strong: #d4d4d8;
+    --input: #e4e4e7;
+    --ring: #2563eb;
+    --card: #ffffff;
+    --card-foreground: #09090b;
+    --primary: #2563eb;
+    --primary-foreground: #ffffff;
+    --primary-hover: #1d4ed8;
+    --primary-active: #1e40af;
+    --primary-soft: #eff6ff;
+    --primary-soft-fg: #1e40af;
+    --primary-soft-border: #bfdbfe;
+    --primary-rgb: 37, 99, 235;
+    --secondary: #f4f4f5;
+    --secondary-foreground: #18181b;
+    --accent: #f4f4f5;
+    --destructive: #dc2626;
+    --success: #16a34a;
+
+    /* Legacy "twoto" tokens kept for any lingering refs — now blue-aligned */
+    --twoto: #2563eb;
+    --twoto-soft: #eff6ff;
+
+    /* Surface stack — dark surfaces for device cards / hero panels */
+    --surface-1: #ffffff;
+    --surface-2: #fafafa;
+    --dark: #0a0a0a;
+    --dark-2: #18181b;
+    --dark-3: #27272a;
+    --dark-border: #27272a;
+    --dark-fg: #fafafa;
+    --dark-muted: #a1a1aa;
+
+    /* Modal scrim — adapts to theme: white-translucent in light, black-translucent in dark */
+    --overlay-scrim: rgba(255, 255, 255, .72);
+  }
+
+  /* Dark mode — toggled via [data-theme="dark"] on root */
+  [data-theme="dark"] {
+    --background: #0a0a0a;
+    --foreground: #fafafa;
+    --muted: #18181b;
+    --muted-foreground: #a1a1aa;
+    --border: #27272a;
+    --border-strong: #3f3f46;
+    --input: #27272a;
+    --ring: #60a5fa;
+    --card: #18181b;
+    --card-foreground: #fafafa;
+    --primary: #60a5fa;
+    --primary-foreground: #0a0a0a;
+    --primary-hover: #3b82f6;
+    --primary-active: #2563eb;
+    --primary-soft: #0c1830;
+    --primary-soft-fg: #bfdbfe;
+    --primary-soft-border: #1e3a8a;
+    --primary-rgb: 96, 165, 250;
+    --secondary: #27272a;
+    --secondary-foreground: #fafafa;
+    --accent: #27272a;
+    --destructive: #f87171;
+    --success: #4ade80;
+
+    --surface-1: #18181b;
+    --surface-2: #0a0a0a;
+
+    --overlay-scrim: rgba(10, 10, 10, .72);
+  }
+
+  html, body {
+    background: var(--surface-2);
+    color: var(--foreground);
+    font-family: 'Geist', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    margin: 0;
+    font-feature-settings: 'cv11', 'ss01';
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+
+  /* ---- Phone shell ---- */
+  .phone {
+    width: 375px;
+    height: 812px;
+    background-color: var(--background);
+    background-image:
+      radial-gradient(110% 80% at 50% 0%, color-mix(in srgb, var(--primary) 7%, transparent), transparent 55%),
+      radial-gradient(color-mix(in srgb, var(--foreground) 5%, transparent) 0.8px, transparent 0.8px),
+      linear-gradient(180deg, var(--background) 0%, color-mix(in srgb, var(--background) 92%, var(--muted)) 100%);
+    background-size: 100% 100%, 16px 16px, 100% 100%;
+    color: var(--foreground);
+    border-radius: 40px;
+    overflow: hidden;
+    position: relative;
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.4;
+    box-shadow: 0 0 0 1px var(--border), 0 12px 24px -8px rgba(0,0,0,.08);
+  }
+  [data-theme="dark"] .phone {
+    background-image:
+      radial-gradient(110% 80% at 50% 0%, color-mix(in srgb, var(--primary) 12%, transparent), transparent 55%),
+      radial-gradient(color-mix(in srgb, var(--foreground) 6%, transparent) 0.8px, transparent 0.8px),
+      linear-gradient(180deg, var(--background) 0%, color-mix(in srgb, var(--background) 92%, #000) 100%);
+    box-shadow: 0 0 0 1px var(--border), 0 12px 28px -10px rgba(0,0,0,.5);
+  }
+  .phone-inner {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* iOS-ish status bar */
+  .statusbar {
+    height: 44px;
+    padding: 0 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 15px; font-weight: 600;
+    flex: 0 0 auto;
+    color: var(--foreground);
+  }
+  .statusbar.dark { color: var(--dark-fg); }
+  .statusbar .icons { display: inline-flex; gap: 5px; align-items: center; }
+  .home-indicator {
+    position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%);
+    width: 134px; height: 5px; border-radius: 3px;
+    background: rgba(0,0,0,0.3);
+  }
+  .phone.dark .home-indicator { background: rgba(255,255,255,0.4); }
+
+  /* ---- Type ---- */
+  .h1 { font-size: 28px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.15; }
+  .h2 { font-size: 22px; font-weight: 600; letter-spacing: -0.015em; line-height: 1.2; }
+  .h3 { font-size: 18px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.25; }
+  .label { font-size: 14px; font-weight: 500; }
+  .small { font-size: 12px; }
+  .muted { color: var(--muted-foreground); }
+  .mono { font-family: 'Geist Mono', 'JetBrains Mono', ui-monospace, monospace; font-feature-settings: 'zero'; }
+
+  /* ---- Buttons (shadcn) ---- */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    height: 40px; padding: 0 16px;
+    border-radius: 8px;
+    font-size: 14px; font-weight: 500;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: background .12s, border-color .12s, color .12s, transform .08s, box-shadow .12s;
+    font-family: inherit;
+    user-select: none;
+    white-space: nowrap;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn:active:not(:disabled) { transform: scale(.97); }
+  .btn:disabled { opacity: .5; cursor: not-allowed; }
+  .btn-primary { background: var(--primary); color: var(--primary-foreground); box-shadow: 0 1px 0 rgba(0,0,0,.04); }
+  .btn-primary:hover { background: var(--primary-hover); }
+  .btn-primary:active:not(:disabled) { background: var(--primary-active); box-shadow: inset 0 2px 4px rgba(0,0,0,.18); }
+  .btn-outline { background: var(--background); border-color: var(--border); color: var(--foreground); }
+  .btn-outline:hover { background: var(--muted); }
+  .btn-outline:active:not(:disabled) { background: var(--muted); border-color: var(--border-strong); box-shadow: inset 0 1px 3px rgba(0,0,0,.05); }
+  .btn-ghost { background: transparent; color: var(--foreground); }
+  .btn-ghost:hover { background: var(--muted); }
+  .btn-ghost:active:not(:disabled) { background: var(--border); }
+  .btn-twoto { background: var(--primary); color: var(--primary-foreground); }
+  .btn-twoto:hover { background: var(--primary-hover); }
+  .btn-twoto:active:not(:disabled) { background: var(--primary-active); }
+  .btn-lg { height: 44px; font-size: 15px; padding: 0 20px; }
+  .btn-sm { height: 32px; font-size: 13px; padding: 0 12px; border-radius: 6px; }
+  .btn-icon { width: 36px; padding: 0; border-radius: 8px; }
+  .btn-icon-sm { width: 32px; height: 32px; padding: 0; border-radius: 8px; }
+  .btn-block { width: 100%; }
+
+  /* ---- Inputs ---- */
+  .input {
+    height: 40px; width: 100%;
+    border: 1px solid var(--input);
+    border-radius: 8px;
+    background: var(--background);
+    padding: 0 12px;
+    font: inherit; font-size: 14px;
+    color: var(--foreground);
+    outline: none;
+  }
+  .input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(var(--primary-rgb), .18); }
+  .input::placeholder { color: var(--muted-foreground); }
+  .field-label { font-size: 13px; font-weight: 500; margin-bottom: 6px; display: block; }
+
+  /* ---- Cards ---- */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+
+  /* Device card — dark variant */
+  .device-card {
+    background: var(--dark);
+    color: var(--dark-fg);
+    border-radius: 16px;
+    padding: 14px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #18181b;
+  }
+  .device-card.off {
+    background: #ffffff;
+    color: var(--foreground);
+    border-color: var(--border);
+  }
+  .device-card.off .meta { color: var(--muted-foreground); }
+  .device-card .meta { color: var(--dark-muted); font-size: 12px; }
+
+  /* ---- Switches ---- */
+  .switch { position: relative; display: inline-block; width: 36px; height: 20px; }
+  .switch input { display: none; }
+  .switch .track {
+    position: absolute; inset: 0;
+    background: var(--border-strong); border-radius: 999px;
+    transition: background .2s;
+  }
+  .switch .thumb {
+    position: absolute; top: 2px; left: 2px; width: 16px; height: 16px;
+    background: white; border-radius: 999px;
+    transition: transform .2s;
+    box-shadow: 0 1px 2px rgba(0,0,0,.2);
+  }
+  .switch input:checked + .track { background: var(--primary); }
+  .switch input:checked + .track .thumb { transform: translateX(16px); }
+
+  /* ---- Misc ---- */
+  .divider { height: 1px; background: var(--border); border: 0; margin: 0; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    height: 20px; padding: 0 8px; border-radius: 999px;
+    background: var(--muted); color: var(--foreground);
+    font-size: 11px; font-weight: 500;
+    border: 1px solid var(--border);
+  }
+  .badge-success { background: rgba(22,163,74,.10); color: var(--success); border-color: rgba(22,163,74,.25); }
+  .badge-twoto { background: var(--primary-soft); color: var(--primary-soft-fg); border-color: var(--primary-soft-border); }
+
+  /* range slider */
+  .range {
+    -webkit-appearance: none; appearance: none;
+    width: 100%; height: 6px; border-radius: 999px;
+    background: var(--muted); outline: none;
+  }
+  .range::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 18px; height: 18px; border-radius: 50%;
+    background: var(--primary);
+    cursor: pointer; border: 2px solid var(--background); box-shadow: 0 0 0 1px var(--border-strong);
+  }
+  .range::-moz-range-thumb {
+    width: 18px; height: 18px; border-radius: 50%;
+    background: var(--primary);
+    cursor: pointer; border: 2px solid var(--background); box-shadow: 0 0 0 1px var(--border-strong);
+  }
+
+  /* tabs */
+  .tabs {
+    display: inline-flex; padding: 4px; background: var(--muted);
+    border-radius: 8px;
+  }
+  .tabs button {
+    border: 0; background: transparent; padding: 6px 12px;
+    border-radius: 6px; font: inherit; font-size: 13px; font-weight: 500;
+    color: var(--muted-foreground); cursor: pointer;
+  }
+  .tabs button.active { background: var(--background); color: var(--foreground); box-shadow: 0 1px 2px rgba(0,0,0,.06); }
+
+  /* segmented control */
+  .seg {
+    display: inline-flex; padding: 4px; gap: 2px;
+    background: var(--muted); border-radius: 8px;
+  }
+  .seg button {
+    border: 0; background: transparent; padding: 6px 12px;
+    border-radius: 6px; font: inherit; font-size: 13px; font-weight: 500;
+    color: var(--muted-foreground); cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .seg button.active { background: var(--background); color: var(--foreground); box-shadow: 0 1px 2px rgba(0,0,0,.06); }
+
+  /* bottom tab bar (pill style) */
+  .tabbar {
+    position: absolute; left: 50%; bottom: 24px; transform: translateX(-50%);
+    background: #0a0a0a; color: var(--dark-fg);
+    border-radius: 999px; padding: 6px;
+    display: inline-flex; gap: 2px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.18);
+  }
+  [data-theme="dark"] .tabbar {
+    background: var(--card);
+    box-shadow: 0 8px 24px rgba(0,0,0,.5), inset 0 0 0 1px var(--border);
+  }
+  .tabbar button {
+    border: 0; background: transparent; color: var(--dark-muted);
+    width: 44px; height: 44px; border-radius: 999px;
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer;
+  }
+  .tabbar button.active { background: var(--primary); color: var(--primary-foreground); }
+
+  /* List rows */
+  .row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 16px;
+  }
+  .row + .row { border-top: 1px solid var(--border); }
+  .row .icon-wrap {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: var(--muted);
+    display: inline-flex; align-items: center; justify-content: center;
+    flex: 0 0 auto;
+  }
+  .row .label-wrap { flex: 1; min-width: 0; }
+  .row .label-wrap .t { font-size: 14px; font-weight: 500; }
+  .row .label-wrap .s { font-size: 12px; color: var(--muted-foreground); }
+  .row .chev { color: var(--muted-foreground); }
+
+  /* Color wheel */
+  .color-wheel {
+    width: 220px; height: 220px; border-radius: 50%;
+    background:
+      radial-gradient(circle, white 0%, transparent 32%),
+      conic-gradient(
+        from 0deg,
+        hsl(0 100% 50%),
+        hsl(60 100% 50%),
+        hsl(120 100% 50%),
+        hsl(180 100% 50%),
+        hsl(240 100% 50%),
+        hsl(300 100% 50%),
+        hsl(360 100% 50%)
+      );
+    box-shadow: 0 0 0 1px var(--border), 0 8px 32px -8px rgba(0,0,0,.15);
+    position: relative;
+  }
+  .color-wheel .pick {
+    position: absolute; width: 22px; height: 22px;
+    border-radius: 50%;
+    background: white; border: 3px solid white;
+    box-shadow: 0 0 0 1px rgba(0,0,0,.3), 0 2px 6px rgba(0,0,0,.2);
+  }
+
+  /* SVG icon size default */
+  .ic { width: 20px; height: 20px; stroke-width: 1.75; }
+  .ic-sm { width: 16px; height: 16px; stroke-width: 2; }
+  .ic-lg { width: 24px; height: 24px; stroke-width: 1.75; }
+
+  /* Skeletons / progress */
+  .progress { height: 4px; width: 100%; background: var(--muted); border-radius: 999px; overflow: hidden; }
+  .progress > span { display: block; height: 100%; background: var(--foreground); border-radius: 999px; }
+
+  /* IoT glow utilities — primary-tinted halos, accent borders, corner notches.
+     Apply selectively to high-attention surfaces; don't blanket every card. */
+  .iot-card {
+    position: relative;
+    background:
+      linear-gradient(180deg,
+        color-mix(in srgb, var(--primary) 6%, var(--card)) 0%,
+        var(--card) 60%);
+    border: 1px solid color-mix(in srgb, var(--primary) 28%, var(--border));
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--primary) 10%, transparent),
+      0 8px 28px -12px color-mix(in srgb, var(--primary) 50%, transparent),
+      inset 0 1px 0 color-mix(in srgb, #fff 55%, transparent);
+  }
+  [data-theme="dark"] .iot-card {
+    background:
+      linear-gradient(180deg,
+        color-mix(in srgb, var(--primary) 12%, var(--card)) 0%,
+        var(--card) 70%);
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--primary) 22%, transparent),
+      0 12px 40px -16px color-mix(in srgb, var(--primary) 60%, transparent),
+      inset 0 1px 0 color-mix(in srgb, var(--primary) 18%, transparent);
+  }
+  .iot-card::before {
+    content: ""; position: absolute; left: 0; right: 0; top: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--primary), transparent);
+    opacity: .85;
+    pointer-events: none;
+  }
+  /* Corner notches — clip-path style markers at the 4 corners */
+  .iot-corners > *:first-child { position: relative; }
+  .iot-corners::before, .iot-corners::after,
+  .iot-corners > .iot-tl, .iot-corners > .iot-br {
+    /* placeholder; we ship a JSX helper instead */
+  }
+
+  .iot-glow-soft  { box-shadow: 0 0 24px -6px color-mix(in srgb, var(--primary) 50%, transparent); }
+  .iot-glow-ring  { box-shadow: 0 0 0 1px color-mix(in srgb, var(--primary) 35%, transparent), 0 0 18px -2px color-mix(in srgb, var(--primary) 45%, transparent); }
+  .iot-divider    { height: 1px; background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--primary) 55%, transparent), transparent); }
+
+  /* Pulsing live dot — for "online", "syncing now", "live" indicators */
+  .iot-dot {
+    display: inline-block; width: 8px; height: 8px; border-radius: 999px;
+    background: var(--success);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--success) 55%, transparent);
+    animation: iot-dot-pulse 2.2s ease-out infinite;
+  }
+  .iot-dot.primary { background: var(--primary); box-shadow: 0 0 0 0 color-mix(in srgb, var(--primary) 55%, transparent); animation-name: iot-dot-pulse-primary; }
+  @keyframes iot-dot-pulse {
+    0%   { box-shadow: 0 0 0 0 color-mix(in srgb, var(--success) 55%, transparent); }
+    70%  { box-shadow: 0 0 0 8px color-mix(in srgb, var(--success) 0%, transparent); }
+    100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--success) 0%, transparent); }
+  }
+  @keyframes iot-dot-pulse-primary {
+    0%   { box-shadow: 0 0 0 0 color-mix(in srgb, var(--primary) 55%, transparent); }
+    70%  { box-shadow: 0 0 0 8px color-mix(in srgb, var(--primary) 0%, transparent); }
+    100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--primary) 0%, transparent); }
+  }
+
+  /* Subtle ambient glow on the phone shell itself — IoT tower vibe */
+  .phone {
+    box-shadow:
+      0 0 0 1px var(--border),
+      0 12px 24px -8px rgba(0,0,0,.08),
+      0 0 60px -20px color-mix(in srgb, var(--primary) 35%, transparent);
+  }
+  [data-theme="dark"] .phone {
+    box-shadow:
+      0 0 0 1px var(--border),
+      0 12px 28px -10px rgba(0,0,0,.5),
+      0 0 80px -20px color-mix(in srgb, var(--primary) 50%, transparent);
+  }
+
+  /* Empty-state hero — soft gradient backdrop, consistent across screens.
+     Use as the body wrapper of empty states so they don't read as blank. */
+  .empty-hero {
+    flex: 1;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center;
+    padding: 32px 28px;
+    background:
+      radial-gradient(120% 80% at 50% 0%, color-mix(in srgb, var(--primary) 10%, transparent) 0%, transparent 60%),
+      linear-gradient(180deg, var(--background) 0%, var(--muted) 100%);
+  }
+  .empty-hero .ic-disc {
+    width: 88px; height: 88px; border-radius: 999px;
+    background: linear-gradient(180deg, var(--background), var(--muted));
+    border: 1px solid var(--border);
+    box-shadow: 0 12px 32px -16px rgba(0,0,0,.18), inset 0 0 0 6px color-mix(in srgb, var(--primary) 6%, transparent);
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--primary);
+    margin-bottom: 16px;
+  }
+  .empty-hero .h2 { margin-bottom: 6px; }
+
+  /* Logo Mark */
+  .twoto-mark {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 56px; height: 56px; border-radius: 14px;
+    background: var(--dark); color: white;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
+  }
+  .twoto-mark.lg { width: 80px; height: 80px; border-radius: 20px; }
+
+  /* Effect chip animations */
+  @keyframes fx-pan-x { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+  @keyframes fx-pan-y { 0% { background-position: 50% 0%; } 100% { background-position: 50% 200%; } }
+  @keyframes fx-pulse { 0%,100% { transform: scale(1); opacity: .9; } 50% { transform: scale(1.06); opacity: 1; } }
+  @keyframes fx-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  @keyframes fx-flicker { 0%,100% { opacity: 1; } 50% { opacity: .55; } }
+  @keyframes mascot-ride { 0%, 100% { left: 10%; } 50% { left: 90%; } }
+  @keyframes mascot-bob  { 0%, 100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-3px) rotate(2deg); } }
+  @keyframes peek-cell-pulse { 0%, 100% { filter: brightness(1); transform: scaleY(1); } 50% { filter: brightness(1.25); transform: scaleY(.92); } }
+
+  /* Robotic / splash visual utilities */
+  .hex-grid {
+    background-image:
+      linear-gradient(60deg, transparent 49.5%, color-mix(in srgb, var(--primary) 14%, transparent) 49.5% 50.5%, transparent 50.5%),
+      linear-gradient(-60deg, transparent 49.5%, color-mix(in srgb, var(--primary) 14%, transparent) 49.5% 50.5%, transparent 50.5%),
+      linear-gradient(0deg,   transparent 49.5%, color-mix(in srgb, var(--primary) 14%, transparent) 49.5% 50.5%, transparent 50.5%);
+    background-size: 28px 48px;
+    background-position: 0 0, 0 0, 0 0;
+  }
+  .scanline-line {
+    background: linear-gradient(90deg, transparent, var(--primary), transparent);
+  }
+  @keyframes scan-sweep { 0% { transform: translateY(-100%); opacity: 0; } 20% { opacity: 1; } 80% { opacity: 1; } 100% { transform: translateY(100%); opacity: 0; } }
+  @keyframes orbit-1 { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  @keyframes orbit-2 { from { transform: rotate(0deg); } to { transform: rotate(-360deg); } }
+  @keyframes ring-pulse {
+    0%   { transform: scale(.5); opacity: .9; }
+    100% { transform: scale(2.4); opacity: 0; }
+  }
+  @keyframes mesh-draw {
+    0%   { stroke-dashoffset: 100; opacity: 0; }
+    20%  { opacity: 1; }
+    100% { stroke-dashoffset: 0; opacity: 1; }
+  }
+  @keyframes type-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+  @keyframes status-cycle {
+    0%, 33%   { opacity: 1; transform: translateY(0); }
+    36%, 66%  { opacity: 0; transform: translateY(-6px); }
+    69%, 99%  { opacity: 0; transform: translateY(6px); }
+    100%      { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes spectrum-shift { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+  @keyframes node-blink {
+    0%, 100% { transform: scale(1); filter: brightness(1); }
+    50% { transform: scale(1.18); filter: brightness(1.3); }
+  }
+  .fx-anim {
+    background-size: 200% 200%;
+    animation: fx-pan-x 6s linear infinite;
+  }
+  .fx-anim-y { animation-name: fx-pan-y; animation-duration: 5s; }
+  .fx-anim-pulse { animation: fx-pulse 1.4s ease-in-out infinite; }
+  .fx-anim-spin { animation: fx-spin 9s linear infinite; }
+  .fx-anim-flicker { animation: fx-flicker .8s steps(8, end) infinite; }
+  .fx-anim-slow { animation-duration: 12s; }
+  .fx-anim-fast { animation-duration: 2.4s; }
+</style>
+</head>
+<body>
+
+<!-- React + Babel -->
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="design-canvas.jsx"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel" src="ui.jsx"></script>
+<script type="text/babel" src="screens-onboarding.jsx"></script>
+<script type="text/babel" src="screens-home.jsx"></script>
+<script type="text/babel" src="screens-add-device.jsx"></script>
+<script type="text/babel" src="screens-device.jsx"></script>
+<script type="text/babel" src="screens-system.jsx"></script>
+<script type="text/babel" src="screens-extra.jsx"></script>
+<script type="text/babel" src="screens-new.jsx"></script>
+<script type="text/babel" src="screens-extra2.jsx"></script>
+<script type="text/babel" src="screens-prod.jsx"></script>
+<script type="text/babel" src="app.jsx"></script>
+
+<div id="root"></div>
+
+</body>
+</html>
