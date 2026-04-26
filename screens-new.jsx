@@ -317,39 +317,115 @@ function ScreenAppLaunchReturning() {
         background: "linear-gradient(180deg, color-mix(in srgb, var(--primary) 6%, var(--background)), var(--background))",
         border: "1px solid var(--border)",
       }}>
-        <svg viewBox="0 0 280 220" style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}>
-          {/* Lines between devices */}
+        {/* Camera focus brackets in the corners */}
+        {[
+          { top: 8, left: 8,    rot: 0   },
+          { top: 8, right: 8,   rot: 90  },
+          { bottom: 8, right: 8, rot: 180 },
+          { bottom: 8, left: 8, rot: 270 },
+        ].map((p, i) => (
+          <span key={i} style={{
+            position: "absolute", ...p, width: 10, height: 10,
+            borderTop: "1.5px solid color-mix(in srgb, var(--primary) 50%, transparent)",
+            borderLeft: "1.5px solid color-mix(in srgb, var(--primary) 50%, transparent)",
+            transform: `rotate(${p.rot}deg)`,
+          }}/>
+        ))}
+
+        {/* Scan line sweeping the mesh box */}
+        <span style={{
+          position: "absolute", left: 0, right: 0, height: 2,
+          background: "linear-gradient(90deg, transparent, var(--primary), transparent)",
+          opacity: .85,
+          animation: "mesh-scan 3.4s ease-in-out infinite",
+          pointerEvents: "none",
+        }}/>
+
+        <svg viewBox="0 0 280 220" preserveAspectRatio="none" style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}>
+          <defs>
+            <linearGradient id="mesh-line-grad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%"  stopColor="color-mix(in srgb, var(--primary) 80%, transparent)"/>
+              <stop offset="50%" stopColor="color-mix(in srgb, var(--primary) 100%, transparent)"/>
+              <stop offset="100%" stopColor="color-mix(in srgb, var(--primary) 80%, transparent)"/>
+            </linearGradient>
+          </defs>
+
+          {/* Lines between devices — pathLength=1 normalizes the dash so each
+              line draws fully regardless of length. */}
           {lines.map(([a, b], i) => {
             const da = devices[a], db = devices[b];
             const offline = devices[a].state === "offline" || devices[b].state === "offline";
             return (
               <line key={i}
                 x1={da.x} y1={da.y} x2={db.x} y2={db.y}
-                stroke={offline ? "var(--border-strong)" : "color-mix(in srgb, var(--primary) 65%, transparent)"}
-                strokeWidth={offline ? "1" : "1.4"}
-                strokeDasharray="100"
+                pathLength="1"
+                stroke={offline ? "var(--border-strong)" : "url(#mesh-line-grad)"}
+                strokeWidth={offline ? "1" : "1.5"}
+                strokeLinecap="round"
+                strokeDasharray="1"
                 style={{
-                  strokeDashoffset: 100,
-                  animation: `mesh-draw ${1.4}s ease-out forwards`,
+                  strokeDashoffset: 1,
+                  animation: `mesh-draw 1.4s ease-out forwards`,
                   animationDelay: `${0.2 + i * 0.18}s`,
-                  opacity: offline ? .35 : .9,
+                  opacity: offline ? .35 : .95,
+                }}
+              />
+            );
+          })}
+
+          {/* Data packets — small dashes traveling along the active links */}
+          {lines.map(([a, b], i) => {
+            const da = devices[a], db = devices[b];
+            const offline = devices[a].state === "offline" || devices[b].state === "offline";
+            if (offline) return null;
+            return (
+              <line key={`packet-${i}`}
+                x1={da.x} y1={da.y} x2={db.x} y2={db.y}
+                pathLength="1"
+                stroke="#ffffff"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeDasharray="0.04 0.96"
+                style={{
+                  strokeDashoffset: 1,
+                  animation: `mesh-packet ${3 + i * 0.4}s linear infinite`,
+                  animationDelay: `${1 + i * 0.25}s`,
+                  filter: "drop-shadow(0 0 3px var(--primary))",
+                  opacity: .9,
                 }}
               />
             );
           })}
         </svg>
+
         {/* Device nodes */}
         {devices.map((d, i) => (
           <div key={i} style={{
             position: "absolute", left: d.x, top: d.y, transform: "translate(-50%, -50%)",
             display: "flex", flexDirection: "column", alignItems: "center", gap: 4,
           }}>
+            {/* Outer ping ring — only when online/syncing */}
+            {d.state !== "offline" && (
+              <span style={{
+                position: "absolute", left: "50%", top: 0,
+                width: 18, height: 18, borderRadius: 999,
+                border: `1.5px solid ${d.color}`,
+                animation: "node-ring 2.4s ease-out infinite",
+                animationDelay: `${d.delay}s`,
+                pointerEvents: "none",
+              }}/>
+            )}
             <span style={{
               width: 18, height: 18, borderRadius: 999,
-              background: d.state === "offline" ? "var(--muted)" : d.color,
-              boxShadow: d.state === "offline" ? "inset 0 0 0 1px var(--border-strong)" : `0 0 14px ${d.color}, 0 0 0 3px color-mix(in srgb, ${d.color} 18%, transparent)`,
-              animation: d.state === "online" ? `node-blink 2.2s ease-in-out infinite` : (d.state === "syncing" ? "node-blink 1s ease-in-out infinite" : undefined),
+              background: d.state === "offline" ? "var(--muted)" : `radial-gradient(circle at 35% 30%, color-mix(in srgb, ${d.color} 80%, #fff) 0%, ${d.color} 60%)`,
+              boxShadow: d.state === "offline"
+                ? "inset 0 0 0 1px var(--border-strong)"
+                : `0 0 18px ${d.color}, 0 0 0 3px color-mix(in srgb, ${d.color} 22%, transparent)`,
+              animation: d.state === "online"  ? `node-blink 2.2s ease-in-out infinite`
+                       : d.state === "syncing" ? "node-blink 1s ease-in-out infinite"
+                                               : undefined,
               animationDelay: `${d.delay}s`,
+              position: "relative", zIndex: 1,
             }}/>
             <span className="mono small" style={{
               fontSize: 9.5, color: "var(--muted-foreground)",
