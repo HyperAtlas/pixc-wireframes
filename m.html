@@ -382,6 +382,11 @@ const SECTIONS = [
     { id: "home",                  label: "Home · populated",               render: () => <ScreenHome/> },
     { id: "search",                label: "Search",                         render: () => <ScreenSearch/> },
 
+    { id: "combination-sync",      label: "PixFusion · setup (PixC+)",      render: () => <ScreenCombinationSync/> },
+    { id: "upsell-combination",    label: "PixFusion · tap (upsell)",       render: () => <ScreenUpsellCombinationSync/> },
+    { id: "grouped-sync",          label: "PixCluster · setup (PixC+)",     render: () => <ScreenGroupedLightSync/> },
+    { id: "upsell-grouped",        label: "PixCluster · tap (upsell)",      render: () => <ScreenUpsellGroupedSync/> },
+
     { id: "ai-empty",              label: "PixC AI · first launch",         render: () => <ScreenTwotoAIEmpty/> },
     { id: "ai-chat",               label: "PixC AI · in conversation",      render: () => <ScreenTwotoAI/> },
     { id: "upsell-ai",             label: "PixC AI · weekly limit (upsell)",render: () => <ScreenUpsellAILimit/> },
@@ -435,7 +440,8 @@ const SECTIONS = [
     { id: "color-locked",          label: "Color · device locked",          render: () => <ScreenDeviceColor online={false} locked/> },
     { id: "color-lightsync",       label: "Color · LightSync overlay",      render: () => <ScreenDeviceColor lightSyncOn/> },
     { id: "device-offline",        label: "Device offline",                 render: () => <ScreenDeviceOffline/> },
-    { id: "color-in-cluster",      label: "Color · in PixCluster",          render: () => <ScreenDeviceColor inCluster/> },
+    { id: "color-in-cluster",      label: "Color · in PixCluster (overlay)", render: () => <ScreenDeviceColor inCluster/> },
+    { id: "color-in-fusion",       label: "Color · in PixFusion (overlay)",  render: () => <ScreenDeviceColor inFusion/> },
     { id: "effects",               label: "Effects · standard",             render: () => <ScreenDeviceEffects/> },
     { id: "effects-music",         label: "Effects · Music sync ON",        render: () => <ScreenDeviceEffects music/> },
     { id: "palettes",              label: "Palettes",                       render: () => <ScreenPalettes/> },
@@ -454,11 +460,6 @@ const SECTIONS = [
     { id: "lightsync-running-tv",  label: "LightSync running · TV",         render: () => <ScreenLightSync mode="tv"/> },
     { id: "lightsync-running-wl",  label: "LightSync running · Wireless",   render: () => <ScreenLightSync mode="wireless"/> },
     { id: "lightsync-running-au",  label: "LightSync running · Audio",      render: () => <ScreenLightSync mode="audio"/> },
-
-    { id: "combination-sync",      label: "PixFusion · setup (PixC+)",      render: () => <ScreenCombinationSync/> },
-    { id: "upsell-combination",    label: "PixFusion · tap (upsell)",       render: () => <ScreenUpsellCombinationSync/> },
-    { id: "grouped-sync",          label: "PixCluster · setup (PixC+)",     render: () => <ScreenGroupedLightSync/> },
-    { id: "upsell-grouped",        label: "PixCluster · tap (upsell)",      render: () => <ScreenUpsellGroupedSync/> },
 
     { id: "presets-empty",         label: "Presets · empty",                render: () => <ScreenPresetsEmpty/> },
     { id: "presets",               label: "Presets gallery",                render: () => <ScreenPresets/> },

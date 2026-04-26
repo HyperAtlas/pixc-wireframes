@@ -159,6 +159,12 @@ function App() {
           <DCArtboard id="home" label="Home · populated" width={375} height={812}><ScreenHome/></DCArtboard>
           <DCArtboard id="search" label="Search" width={375} height={812}><ScreenSearch/></DCArtboard>
 
+          {/* Group-level sync features (controlled from home, not per-device) */}
+          <DCArtboard id="combination-sync" label="PixFusion · setup (PixC+)" width={375} height={812}><ScreenCombinationSync/></DCArtboard>
+          <DCArtboard id="upsell-combination" label="PixFusion · tap from Free (upsell)" width={375} height={812}><ScreenUpsellCombinationSync/></DCArtboard>
+          <DCArtboard id="grouped-sync" label="PixCluster · setup (PixC+)" width={375} height={812}><ScreenGroupedLightSync/></DCArtboard>
+          <DCArtboard id="upsell-grouped" label="PixCluster · tap from Free (upsell)" width={375} height={812}><ScreenUpsellGroupedSync/></DCArtboard>
+
           {/* PixC AI */}
           <DCArtboard id="ai-empty" label="PixC AI · first launch" width={375} height={812}><ScreenTwotoAIEmpty/></DCArtboard>
           <DCArtboard id="ai-chat" label="PixC AI · in conversation" width={375} height={812}><ScreenTwotoAI/></DCArtboard>
@@ -223,7 +229,8 @@ function App() {
           <DCArtboard id="color-locked" label="Color · device locked" width={375} height={812}><ScreenDeviceColor online={false} locked/></DCArtboard>
           <DCArtboard id="color-lightsync" label="Color · LightSync overlay" width={375} height={812}><ScreenDeviceColor lightSyncOn/></DCArtboard>
           <DCArtboard id="device-offline" label="Device offline" width={375} height={812}><ScreenDeviceOffline/></DCArtboard>
-          <DCArtboard id="color-in-cluster" label="Color · in PixCluster" width={375} height={812}><ScreenDeviceColor inCluster/></DCArtboard>
+          <DCArtboard id="color-in-cluster" label="Color · in PixCluster (overlay)" width={375} height={812}><ScreenDeviceColor inCluster/></DCArtboard>
+          <DCArtboard id="color-in-fusion" label="Color · in PixFusion (overlay)" width={375} height={812}><ScreenDeviceColor inFusion/></DCArtboard>
           <DCArtboard id="effects" label="Effects · standard" width={375} height={812}><ScreenDeviceEffects/></DCArtboard>
           <DCArtboard id="effects-music" label="Effects · Music sync ON" width={375} height={812}><ScreenDeviceEffects music/></DCArtboard>
           <DCArtboard id="palettes" label="Palettes" width={375} height={812}><ScreenPalettes/></DCArtboard>
@@ -242,12 +249,6 @@ function App() {
           <DCArtboard id="lightsync-running-tv" label="LightSync running · TV" width={375} height={812}><ScreenLightSync mode="tv"/></DCArtboard>
           <DCArtboard id="lightsync-running-wireless" label="LightSync running · Wireless" width={375} height={812}><ScreenLightSync mode="wireless"/></DCArtboard>
           <DCArtboard id="lightsync-running-audio" label="LightSync running · Audio" width={375} height={812}><ScreenLightSync mode="audio"/></DCArtboard>
-
-          {/* PixC+ multi-device sync */}
-          <DCArtboard id="combination-sync" label="PixFusion · setup (PixC+)" width={375} height={812}><ScreenCombinationSync/></DCArtboard>
-          <DCArtboard id="upsell-combination" label="PixFusion · tap from Free (upsell)" width={375} height={812}><ScreenUpsellCombinationSync/></DCArtboard>
-          <DCArtboard id="grouped-sync" label="PixCluster · setup (PixC+)" width={375} height={812}><ScreenGroupedLightSync/></DCArtboard>
-          <DCArtboard id="upsell-grouped" label="PixCluster · tap from Free (upsell)" width={375} height={812}><ScreenUpsellGroupedSync/></DCArtboard>
 
           <DCArtboard id="presets-empty" label="Presets · empty" width={375} height={812}><ScreenPresetsEmpty/></DCArtboard>
           <DCArtboard id="presets" label="Presets gallery" width={375} height={812}><ScreenPresets/></DCArtboard>

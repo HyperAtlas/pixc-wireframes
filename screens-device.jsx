@@ -49,7 +49,8 @@ function DeviceIcon({ size = 84 }) {
 }
 
 // === The signature device header — bulb mark overflows upward, name center, status under ===
-function DeviceTopBar({ name = "PixC Lyt", room = "Living room", section = null, online = true, hideMark = false, title = null, showStatus = false, controllers = null }) {
+function DeviceTopBar({ name = "PixC Lyt", room = "Living room", section = null, online = true, hideMark = false, title = null, showStatus = false, controllers = null, group = null }) {
+  // group: { kind: "cluster" | "fusion", name: "Living room" } — adds a status pill
   // controllers: array of { name, color } — others in the home currently controlling this device
   return (
     <>
@@ -127,6 +128,23 @@ function DeviceTopBar({ name = "PixC Lyt", room = "Living room", section = null,
               }}>
                 <span style={{ width: 6, height: 6, borderRadius: 999, background: online ? "var(--success)" : "var(--destructive)" }}/>
                 {online ? "Online" : "Offline · Local"}
+              </span>
+            )}
+            {group && (
+              <span style={{
+                display: "inline-flex", alignItems: "center", gap: 5,
+                padding: "3px 9px", borderRadius: 999, fontSize: 11, fontWeight: 600,
+                background: "var(--primary-soft)",
+                color: "var(--primary)",
+                border: "1px solid color-mix(in srgb, var(--primary) 35%, transparent)",
+              }}>
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  {group.kind === "cluster"
+                    ? <><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></>
+                    : <><path d="M5 5h6v6H5zM13 13h6v6h-6zM5 13l6 6M19 5l-6 6"/></>
+                  }
+                </svg>
+                {group.kind === "cluster" ? "PixCluster" : "PixFusion"}
               </span>
             )}
           </div>
@@ -231,44 +249,19 @@ function StatusGrid({ effect = "Solid", music = false, palette = "Breeze", segme
 }
 
 // === Main device control (Figma Frame 17) ===
-function ScreenDeviceColor({ online = true, lightSyncOn = false, locked = false, peek = true, inCluster = false }) {
+function ScreenDeviceColor({ online = true, lightSyncOn = false, locked = false, peek = true, inCluster = false, inFusion = false }) {
   const peekItem = STANDARD_EFFECTS[1]; // Breeze — represents what's running
   const controllers = locked ? null : [
     { name: "Aria", color: "#ec4899" },
     { name: "Sam",  color: "#3b82f6" },
   ];
+  // Status pill in the topbar reflects cluster/fusion membership.
+  const group = inCluster ? { kind: "cluster", name: "Living room" }
+              : inFusion  ? { kind: "fusion",  name: "Movie night" }
+              : null;
   return (
     <Phone>
-      <DeviceTopBar online={online} showStatus controllers={controllers}/>
-
-      {/* PixCluster banner — shown when this device is part of an active
-          cluster. Any change here propagates to every member. */}
-      {inCluster && (
-        <div style={{ padding: "8px 20px 0" }}>
-          <div className="card iot-card" style={{
-            padding: "10px 12px", display: "flex", alignItems: "center", gap: 10,
-          }}>
-            <span style={{
-              width: 30, height: 30, borderRadius: 9,
-              background: "var(--primary-soft)", color: "var(--primary)",
-              display: "inline-flex", alignItems: "center", justifyContent: "center",
-              flexShrink: 0,
-            }}>
-              <i className="fa-solid fa-object-group" style={{ fontSize: 14 }}/>
-            </span>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: 12, fontWeight: 600, display: "flex", alignItems: "center", gap: 6 }}>
-                Living room PixCluster
-                {window.LockBadge && <window.LockBadge size="sm"/>}
-              </div>
-              <div className="muted" style={{ fontSize: 11, lineHeight: 1.35, marginTop: 1 }}>
-                Changes here change the effect, palette, and brightness for all 4 grouped devices.
-              </div>
-            </div>
-            <button className="btn btn-ghost btn-sm" style={{ height: 26, padding: "0 8px", fontSize: 11, color: "var(--muted-foreground)" }}>Manage</button>
-          </div>
-        </div>
-      )}
+      <DeviceTopBar online={online} showStatus controllers={controllers} group={group}/>
 
       {/* Peek — live preview of what the controller is rendering on the
           strip's currently-active segment. The 10-cell strip is a sample
@@ -394,6 +387,90 @@ function ScreenDeviceColor({ online = true, lightSyncOn = false, locked = false,
       </div>
 
       <FigPillNav active="home"/>
+
+      {/* PixCluster overlay — device is in a cluster; instruct user to
+          manage from the homepage cluster card. Same scrim as LightSync. */}
+      {inCluster && (
+        <div style={{
+          position: "absolute", inset: 0,
+          background: "var(--overlay-scrim)",
+          backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          padding: "0 24px",
+          zIndex: 50,
+        }}>
+          <div style={{
+            background: "#0a0a0a",
+            color: "#fafafa",
+            borderRadius: 20,
+            padding: "28px 24px 24px",
+            width: "100%",
+            maxWidth: 300,
+            textAlign: "center",
+            display: "flex", flexDirection: "column", alignItems: "center", gap: 14,
+            border: "1px solid #27272a",
+            boxShadow: "0 24px 48px -16px rgba(0,0,0,.55)",
+          }}>
+            <div style={{
+              width: 56, height: 56, borderRadius: 16,
+              background: "rgba(var(--primary-rgb),.20)", color: "var(--primary)",
+              display: "inline-flex", alignItems: "center", justifyContent: "center",
+            }}>
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.85" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+            </div>
+            <div>
+              <div style={{ fontSize: 17, fontWeight: 600, letterSpacing: "-0.01em" }}>Part of a PixCluster</div>
+              <div style={{ fontSize: 13, color: "#a1a1aa", marginTop: 6, lineHeight: 1.45 }}>
+                This device follows the Living room cluster. To control it on its own, disable PixCluster from the homepage.
+              </div>
+            </div>
+            <button className="btn btn-primary btn-block" style={{ marginTop: 4 }}>Open cluster controls</button>
+            <button className="btn btn-ghost btn-block" style={{ color: "#a1a1aa" }}>Disable PixCluster</button>
+          </div>
+        </div>
+      )}
+
+      {/* PixFusion overlay — device is in a fusion session; user must
+          disable fusion from the homepage to control individually. */}
+      {inFusion && (
+        <div style={{
+          position: "absolute", inset: 0,
+          background: "var(--overlay-scrim)",
+          backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          padding: "0 24px",
+          zIndex: 50,
+        }}>
+          <div style={{
+            background: "#0a0a0a",
+            color: "#fafafa",
+            borderRadius: 20,
+            padding: "28px 24px 24px",
+            width: "100%",
+            maxWidth: 300,
+            textAlign: "center",
+            display: "flex", flexDirection: "column", alignItems: "center", gap: 14,
+            border: "1px solid #27272a",
+            boxShadow: "0 24px 48px -16px rgba(0,0,0,.55)",
+          }}>
+            <div style={{
+              width: 56, height: 56, borderRadius: 16,
+              background: "rgba(var(--primary-rgb),.20)", color: "var(--primary)",
+              display: "inline-flex", alignItems: "center", justifyContent: "center",
+            }}>
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.85" strokeLinecap="round" strokeLinejoin="round"><path d="M5 5h6v6H5zM13 13h6v6h-6zM5 13l6 6M19 5l-6 6"/></svg>
+            </div>
+            <div>
+              <div style={{ fontSize: 17, fontWeight: 600, letterSpacing: "-0.01em" }}>In a PixFusion session</div>
+              <div style={{ fontSize: 13, color: "#a1a1aa", marginTop: 6, lineHeight: 1.45 }}>
+                This device is fused with others to one source. Disable PixFusion from the homepage to control it on its own.
+              </div>
+            </div>
+            <button className="btn btn-primary btn-block" style={{ marginTop: 4 }}>Open fusion controls</button>
+            <button className="btn btn-ghost btn-block" style={{ color: "#a1a1aa" }}>Disable PixFusion</button>
+          </div>
+        </div>
+      )}
 
       {/* LightSync overlay — full-phone scrim, theme-adaptive, with a small dark card */}
       {lightSyncOn && (
