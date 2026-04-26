@@ -119,7 +119,12 @@ function DeviceCard({ name, room, color, kind = "bulb", on = true, brightness = 
   );
 }
 
-function ScreenHome() {
+function ScreenHome({ activeCluster = false, activeFusion = false, homeOffline = false } = {}) {
+  const [plan] = (window.usePixcPlan ? window.usePixcPlan() : ["free", () => {}]);
+  const isPro = plan === "pro";
+  const activeGroup = activeCluster ? { kind: "cluster", title: "Living Room PixCluster", room: "Living room", primary: "PixC Lyt", devices: 4, effect: "Aurora", brightness: 65 }
+                    : activeFusion  ? { kind: "fusion",  title: "Movie night PixFusion", room: "Living room", primary: "PixC Lyt", devices: 6, effect: "Sunset", brightness: 78 }
+                    : null;
   const rooms = [
     { id: "all", label: "All", count: 12, icon: <svg className="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>, active: true },
     { id: "lr", label: "Living", count: 4, icon: <svg className="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12V8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4"/><path d="M2 16a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v3h-2v-2H4v2H2v-3z"/></svg> },
@@ -184,16 +189,32 @@ function ScreenHome() {
       </div>
 
       <div style={{ padding: "10px 20px 0" }}>
-        <div className="card" style={{ padding: "10px 12px", display: "flex", alignItems: "center", gap: 10, background: "var(--muted)" }}>
-          <span className="iot-dot"/>
-          <div style={{ flex: 1, fontSize: 12 }}>
-            <span style={{ fontWeight: 500 }}>8 online</span>
-            <span className="muted"> · 1 local · </span>
-            <span className="mono" style={{ fontWeight: 500 }}>2.3 kWh</span>
-            <span className="muted"> today</span>
+        {homeOffline ? (
+          <div className="card" style={{
+            padding: "10px 12px", display: "flex", alignItems: "center", gap: 10,
+            background: "rgba(220,38,38,.06)",
+            border: "1px solid rgba(220,38,38,.18)",
+            color: "var(--destructive)",
+          }}>
+            <span style={{ width: 8, height: 8, borderRadius: 999, background: "var(--destructive)", boxShadow: "0 0 0 4px rgba(220,38,38,.18)" }}/>
+            <div style={{ flex: 1, fontSize: 12 }}>
+              <span style={{ fontWeight: 600 }}>Working offline · local mode</span>
+              <span className="muted" style={{ color: "var(--destructive)", opacity: .8 }}> · cloud unreachable, AI &amp; cloud automations paused</span>
+            </div>
+            <button className="btn btn-ghost btn-sm" style={{ height: 24, padding: "0 8px", fontSize: 12, color: "var(--destructive)" }}>Retry</button>
           </div>
-          <button className="btn btn-ghost btn-sm" style={{ height: 24, padding: "0 8px", fontSize: 12 }}>Details</button>
-        </div>
+        ) : (
+          <div className="card" style={{ padding: "10px 12px", display: "flex", alignItems: "center", gap: 10, background: "var(--muted)" }}>
+            <span className="iot-dot"/>
+            <div style={{ flex: 1, fontSize: 12 }}>
+              <span style={{ fontWeight: 500 }}>8 online</span>
+              <span className="muted"> · 1 local · </span>
+              <span className="mono" style={{ fontWeight: 500 }}>2.3 kWh</span>
+              <span className="muted"> today</span>
+            </div>
+            <button className="btn btn-ghost btn-sm" style={{ height: 24, padding: "0 8px", fontSize: 12 }}>Details</button>
+          </div>
+        )}
       </div>
 
       {/* Rooms */}
@@ -207,43 +228,106 @@ function ScreenHome() {
         </div>
       </div>
 
-      {/* Sync features — quick entry to PixFusion & PixCluster */}
-      <div style={{ padding: "16px 20px 0" }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
-          <div className="h3">Sync</div>
-          <span className="muted small">PixC+ features</span>
+      {/* Active group card — only when Pro user has an active cluster/fusion.
+          Shown above the Sync tiles to signal the room/group is being driven
+          as a unit. Mirrors device-card aesthetic with the same Living
+          room / Online status pills as a device. */}
+      {activeGroup && isPro && (
+        <div style={{ padding: "16px 20px 0" }}>
+          <div className="card iot-card" style={{
+            padding: 14,
+            display: "flex", flexDirection: "column", gap: 10,
+          }}>
+            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
+                <span style={{
+                  width: 36, height: 36, borderRadius: 10,
+                  background: "var(--primary-soft)", color: "var(--primary)",
+                  display: "inline-flex", alignItems: "center", justifyContent: "center",
+                  flexShrink: 0,
+                }}>
+                  <i className={activeGroup.kind === "cluster" ? "fa-solid fa-object-group" : "fa-solid fa-layer-group"} style={{ fontSize: 16 }}/>
+                </span>
+                <div style={{ minWidth: 0 }}>
+                  <div style={{ fontSize: 14, fontWeight: 600, letterSpacing: "-0.005em" }}>{activeGroup.title}</div>
+                  <div className="muted small" style={{ fontSize: 11, marginTop: 1 }}>{activeGroup.devices} devices · primary <span style={{ color: "var(--foreground)", fontWeight: 500 }}>{activeGroup.primary}</span></div>
+                </div>
+              </div>
+              <label className="switch"><input type="checkbox" defaultChecked/><span className="track"><span className="thumb"/></span></label>
+            </div>
+
+            {/* Status pills — match the device topbar's Living room / Online style */}
+            <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
+              <span style={{
+                display: "inline-flex", alignItems: "center", gap: 5,
+                padding: "3px 9px", borderRadius: 999,
+                border: "1px solid var(--border)",
+                fontSize: 11, fontWeight: 500, color: "var(--muted-foreground)",
+              }}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 11, height: 11 }}><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
+                {activeGroup.room}
+              </span>
+              <span style={{
+                display: "inline-flex", alignItems: "center", gap: 5,
+                padding: "3px 9px", borderRadius: 999, fontSize: 11, fontWeight: 500,
+                background: "rgba(22,163,74,.10)", color: "var(--success)",
+                border: "1px solid rgba(22,163,74,.25)",
+              }}>
+                <span style={{ width: 6, height: 6, borderRadius: 999, background: "var(--success)" }}/>
+                Online
+              </span>
+              <span className="muted small mono" style={{ marginLeft: "auto", fontSize: 10.5, letterSpacing: ".04em" }}>
+                {activeGroup.effect} · {activeGroup.brightness}%
+              </span>
+            </div>
+          </div>
         </div>
+      )}
+
+      {/* Sync features — entry to PixFusion & PixCluster.
+          Free: tiles disabled with a PixC+ label inside.
+          Pro: tiles enabled. */}
+      <div style={{ padding: "16px 20px 0" }}>
+        <div className="h3" style={{ marginBottom: 8 }}>Sync</div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-          <button className="card iot-card" style={{
-            padding: 12, textAlign: "left", cursor: "pointer", font: "inherit",
-            display: "flex", flexDirection: "column", gap: 6, alignItems: "flex-start",
-            color: "var(--foreground)",
-          }}>
-            <span style={{
-              width: 32, height: 32, borderRadius: 9,
-              background: "var(--primary-soft)", color: "var(--primary)",
-              display: "inline-flex", alignItems: "center", justifyContent: "center",
+          {[
+            { id: "fusion",  t: "PixFusion",  s: "Fuse multiple devices into one sync.", icon: "fa-solid fa-layer-group" },
+            { id: "cluster", t: "PixCluster", s: "Group a room — primary drives the rest.", icon: "fa-solid fa-object-group" },
+          ].map(tile => (
+            <button key={tile.id} className={isPro ? "card iot-card" : "card"} disabled={!isPro} style={{
+              padding: 12, textAlign: "left", cursor: isPro ? "pointer" : "not-allowed", font: "inherit",
+              display: "flex", flexDirection: "column", gap: 6, alignItems: "flex-start",
+              color: isPro ? "var(--foreground)" : "var(--muted-foreground)",
+              background: isPro ? undefined : "var(--card)",
+              border: isPro ? undefined : "1px solid var(--border)",
+              opacity: isPro ? 1 : .85,
+              position: "relative",
+              overflow: "hidden",
             }}>
-              <i className="fa-solid fa-layer-group" style={{ fontSize: 14 }}/>
-            </span>
-            <div style={{ fontSize: 13, fontWeight: 600 }}>PixFusion</div>
-            <div className="muted small" style={{ fontSize: 11, lineHeight: 1.35 }}>Fuse multiple devices into one sync.</div>
-          </button>
-          <button className="card iot-card" style={{
-            padding: 12, textAlign: "left", cursor: "pointer", font: "inherit",
-            display: "flex", flexDirection: "column", gap: 6, alignItems: "flex-start",
-            color: "var(--foreground)",
-          }}>
-            <span style={{
-              width: 32, height: 32, borderRadius: 9,
-              background: "var(--primary-soft)", color: "var(--primary)",
-              display: "inline-flex", alignItems: "center", justifyContent: "center",
-            }}>
-              <i className="fa-solid fa-object-group" style={{ fontSize: 14 }}/>
-            </span>
-            <div style={{ fontSize: 13, fontWeight: 600 }}>PixCluster</div>
-            <div className="muted small" style={{ fontSize: 11, lineHeight: 1.35 }}>Group a room — primary drives the rest.</div>
-          </button>
+              {!isPro && (
+                <span aria-hidden style={{
+                  position: "absolute", inset: 0,
+                  backgroundImage: "repeating-linear-gradient(45deg, transparent 0 8px, color-mix(in srgb, var(--muted-foreground) 6%, transparent) 8px 9px)",
+                  pointerEvents: "none",
+                }}/>
+              )}
+              <div style={{ display: "flex", alignItems: "center", gap: 6, width: "100%" }}>
+                <span style={{
+                  width: 32, height: 32, borderRadius: 9,
+                  background: isPro ? "var(--primary-soft)" : "var(--muted)",
+                  color: isPro ? "var(--primary)" : "var(--muted-foreground)",
+                  display: "inline-flex", alignItems: "center", justifyContent: "center",
+                }}>
+                  <i className={tile.icon} style={{ fontSize: 14 }}/>
+                </span>
+                {!isPro && window.LockBadge && (
+                  <span style={{ marginLeft: "auto" }}><window.LockBadge size="sm"/></span>
+                )}
+              </div>
+              <div style={{ fontSize: 13, fontWeight: 600 }}>{tile.t}</div>
+              <div className="muted small" style={{ fontSize: 11, lineHeight: 1.35 }}>{tile.s}</div>
+            </button>
+          ))}
         </div>
       </div>
 

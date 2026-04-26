@@ -380,6 +380,9 @@ const SECTIONS = [
     { id: "home-welcome",          label: "Daily welcome (warm)",           render: () => <ScreenHomeWelcome/> },
     { id: "home-empty",            label: "Home · empty",                   render: () => <ScreenHomeEmpty/> },
     { id: "home",                  label: "Home · populated",               render: () => <ScreenHome/> },
+    { id: "home-cluster",          label: "Home · active PixCluster (Pro)", render: () => <ScreenHome activeCluster/> },
+    { id: "home-fusion",           label: "Home · active PixFusion (Pro)",  render: () => <ScreenHome activeFusion/> },
+    { id: "home-offline",          label: "Home · offline (local mode)",    render: () => <ScreenHome homeOffline/> },
     { id: "search",                label: "Search",                         render: () => <ScreenSearch/> },
 
     { id: "combination-sync",      label: "PixFusion · setup (PixC+)",      render: () => <ScreenCombinationSync/> },

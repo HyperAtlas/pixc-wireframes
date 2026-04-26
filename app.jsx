@@ -157,6 +157,9 @@ function App() {
           <DCArtboard id="home-welcome" label="Daily welcome (warm)" width={375} height={812}><ScreenHomeWelcome/></DCArtboard>
           <DCArtboard id="home-empty" label="Home · empty (no devices)" width={375} height={812}><ScreenHomeEmpty/></DCArtboard>
           <DCArtboard id="home" label="Home · populated" width={375} height={812}><ScreenHome/></DCArtboard>
+          <DCArtboard id="home-cluster" label="Home · active PixCluster (Pro)" width={375} height={812}><ScreenHome activeCluster/></DCArtboard>
+          <DCArtboard id="home-fusion" label="Home · active PixFusion (Pro)" width={375} height={812}><ScreenHome activeFusion/></DCArtboard>
+          <DCArtboard id="home-offline" label="Home · offline (local mode)" width={375} height={812}><ScreenHome homeOffline/></DCArtboard>
           <DCArtboard id="search" label="Search" width={375} height={812}><ScreenSearch/></DCArtboard>
 
           {/* Group-level sync features (controlled from home, not per-device) */}
