@@ -532,7 +532,6 @@ function ScreenCombinationSync() {
 
         <button className="btn btn-primary btn-lg btn-block">Start PixFusion</button>
       </div>
-      <FigPillNav active="extras"/>
     </Phone>
   );
 }
@@ -666,7 +665,6 @@ function ScreenGroupedLightSync() {
 
         <button className="btn btn-primary btn-lg btn-block">Save PixCluster</button>
       </div>
-      <FigPillNav active="extras"/>
     </Phone>
   );
 }
