@@ -260,6 +260,7 @@
   @keyframes mesh-packet { 0% { stroke-dashoffset: 1; } 100% { stroke-dashoffset: -1; } }
   @keyframes node-ring { 0% { transform: translate(-50%, -50%) scale(.6); opacity: .9; } 100% { transform: translate(-50%, -50%) scale(2.2); opacity: 0; } }
   @keyframes mesh-scan { 0% { transform: translateY(-100%); opacity: 0; } 20% { opacity: 1; } 80% { opacity: 1; } 100% { transform: translateY(100%); opacity: 0; } }
+  @keyframes mesh-scan-top { 0% { top: 0%; opacity: 0; } 15% { opacity: 1; } 85% { opacity: 1; } 100% { top: 100%; opacity: 0; } }
   @keyframes type-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
   @keyframes status-cycle { 0%, 33% { opacity: 1; transform: translateY(0); } 36%, 66% { opacity: 0; transform: translateY(-6px); } 69%, 99% { opacity: 0; transform: translateY(6px); } 100% { opacity: 1; transform: translateY(0); } }
   @keyframes spectrum-shift { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
@@ -481,6 +482,7 @@ const SECTIONS = [
     { id: "strip-type-picker",     label: "Strip type picker (popup)",      render: () => <ScreenStripTypePicker/> },
     { id: "power-plan-picker",     label: "Power plan picker (popup)",      render: () => <ScreenPowerPlanPicker/> },
     { id: "remove-device",         label: "Remove device · confirm",        render: () => <ScreenRemoveDevice/> },
+    { id: "remove-device-manual",  label: "Remove device · manual reset",   render: () => <ScreenRemoveDevice showManual/> },
     { id: "ota-progress",          label: "Firmware update · in progress",  render: () => <ScreenOtaProgress/> },
     { id: "ota-success",           label: "Firmware update · success",      render: () => <ScreenOtaSuccess/> },
     { id: "ota-failed",            label: "Firmware update · failed",       render: () => <ScreenOtaFailed/> },

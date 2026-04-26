@@ -310,9 +310,10 @@ function ScreenAppLaunchReturning() {
         </div>
       </div>
 
-      {/* Mesh visualization */}
+      {/* Mesh visualization — everything inside the SVG so lines, nodes,
+          and labels share one coordinate system (no CSS-vs-viewBox drift). */}
       <div className="hex-grid" style={{
-        margin: "20px 24px 0", height: 240, position: "relative",
+        margin: "20px 24px 0", aspectRatio: "280 / 220", position: "relative",
         borderRadius: 14, overflow: "hidden",
         background: "linear-gradient(180deg, color-mix(in srgb, var(--primary) 6%, var(--background)), var(--background))",
         border: "1px solid var(--border)",
@@ -329,34 +330,37 @@ function ScreenAppLaunchReturning() {
             borderTop: "1.5px solid color-mix(in srgb, var(--primary) 50%, transparent)",
             borderLeft: "1.5px solid color-mix(in srgb, var(--primary) 50%, transparent)",
             transform: `rotate(${p.rot}deg)`,
+            zIndex: 2,
           }}/>
         ))}
 
-        {/* Scan line sweeping the mesh box */}
+        {/* Scan line sweeping the mesh box. Animates `top` so it
+            traverses the full container height regardless of size. */}
         <span style={{
           position: "absolute", left: 0, right: 0, height: 2,
           background: "linear-gradient(90deg, transparent, var(--primary), transparent)",
-          opacity: .85,
-          animation: "mesh-scan 3.4s ease-in-out infinite",
+          animation: "mesh-scan-top 3.4s ease-in-out infinite",
           pointerEvents: "none",
+          zIndex: 1,
         }}/>
 
-        <svg viewBox="0 0 280 220" preserveAspectRatio="none" style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}>
+        <svg viewBox="0 0 280 220" preserveAspectRatio="xMidYMid meet" style={{
+          position: "absolute", inset: 0, width: "100%", height: "100%",
+        }}>
           <defs>
             <linearGradient id="mesh-line-grad" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%"  stopColor="color-mix(in srgb, var(--primary) 80%, transparent)"/>
-              <stop offset="50%" stopColor="color-mix(in srgb, var(--primary) 100%, transparent)"/>
-              <stop offset="100%" stopColor="color-mix(in srgb, var(--primary) 80%, transparent)"/>
+              <stop offset="0%"  stopColor="color-mix(in srgb, var(--primary) 70%, transparent)"/>
+              <stop offset="50%" stopColor="var(--primary)"/>
+              <stop offset="100%" stopColor="color-mix(in srgb, var(--primary) 70%, transparent)"/>
             </linearGradient>
           </defs>
 
-          {/* Lines between devices — pathLength=1 normalizes the dash so each
-              line draws fully regardless of length. */}
+          {/* Lines between devices — pathLength=1 so each draws fully */}
           {lines.map(([a, b], i) => {
             const da = devices[a], db = devices[b];
             const offline = devices[a].state === "offline" || devices[b].state === "offline";
             return (
-              <line key={i}
+              <line key={`l-${i}`}
                 x1={da.x} y1={da.y} x2={db.x} y2={db.y}
                 pathLength="1"
                 stroke={offline ? "var(--border-strong)" : "url(#mesh-line-grad)"}
@@ -373,22 +377,22 @@ function ScreenAppLaunchReturning() {
             );
           })}
 
-          {/* Data packets — small dashes traveling along the active links */}
+          {/* Data packets traveling along active links */}
           {lines.map(([a, b], i) => {
             const da = devices[a], db = devices[b];
             const offline = devices[a].state === "offline" || devices[b].state === "offline";
             if (offline) return null;
             return (
-              <line key={`packet-${i}`}
+              <line key={`p-${i}`}
                 x1={da.x} y1={da.y} x2={db.x} y2={db.y}
                 pathLength="1"
                 stroke="#ffffff"
                 strokeWidth="2"
                 strokeLinecap="round"
-                strokeDasharray="0.04 0.96"
+                strokeDasharray="0.05 0.95"
                 style={{
                   strokeDashoffset: 1,
-                  animation: `mesh-packet ${3 + i * 0.4}s linear infinite`,
+                  animation: `mesh-packet ${2.6 + i * 0.4}s linear infinite`,
                   animationDelay: `${1 + i * 0.25}s`,
                   filter: "drop-shadow(0 0 3px var(--primary))",
                   opacity: .9,
@@ -396,47 +400,46 @@ function ScreenAppLaunchReturning() {
               />
             );
           })}
-        </svg>
 
-        {/* Device nodes */}
-        {devices.map((d, i) => (
-          <div key={i} style={{
-            position: "absolute", left: d.x, top: d.y, transform: "translate(-50%, -50%)",
-            display: "flex", flexDirection: "column", alignItems: "center", gap: 4,
-          }}>
-            {/* Outer ping ring — only when online/syncing */}
-            {d.state !== "offline" && (
-              <span style={{
-                position: "absolute", left: "50%", top: 0,
-                width: 18, height: 18, borderRadius: 999,
-                border: `1.5px solid ${d.color}`,
-                animation: "node-ring 2.4s ease-out infinite",
-                animationDelay: `${d.delay}s`,
-                pointerEvents: "none",
-              }}/>
-            )}
-            <span style={{
-              width: 18, height: 18, borderRadius: 999,
-              background: d.state === "offline" ? "var(--muted)" : `radial-gradient(circle at 35% 30%, color-mix(in srgb, ${d.color} 80%, #fff) 0%, ${d.color} 60%)`,
-              boxShadow: d.state === "offline"
-                ? "inset 0 0 0 1px var(--border-strong)"
-                : `0 0 18px ${d.color}, 0 0 0 3px color-mix(in srgb, ${d.color} 22%, transparent)`,
-              animation: d.state === "online"  ? `node-blink 2.2s ease-in-out infinite`
-                       : d.state === "syncing" ? "node-blink 1s ease-in-out infinite"
-                                               : undefined,
-              animationDelay: `${d.delay}s`,
-              position: "relative", zIndex: 1,
-            }}/>
-            <span className="mono small" style={{
-              fontSize: 9.5, color: "var(--muted-foreground)",
-              padding: "1px 5px", borderRadius: 4,
-              background: "color-mix(in srgb, var(--background) 80%, transparent)",
-              backdropFilter: "blur(2px)",
-              whiteSpace: "nowrap",
-              letterSpacing: ".04em",
-            }}>{d.name}</span>
-          </div>
-        ))}
+          {/* Device nodes — pulse ring + filled dot + label, all in SVG
+              so they line up exactly with the line endpoints. */}
+          {devices.map((d, i) => {
+            const offline = d.state === "offline";
+            return (
+              <g key={d.name}>
+                {!offline && (
+                  <circle cx={d.x} cy={d.y} r="9"
+                    fill="none" stroke={d.color} strokeWidth="1.5">
+                    <animate attributeName="r" values="9;22;9" dur="2.4s" repeatCount="indefinite" begin={`${d.delay}s`}/>
+                    <animate attributeName="opacity" values=".9;0;0" dur="2.4s" repeatCount="indefinite" begin={`${d.delay}s`}/>
+                  </circle>
+                )}
+                <circle cx={d.x} cy={d.y} r="9"
+                  fill={offline ? "var(--muted)" : d.color}
+                  stroke={offline ? "var(--border-strong)" : `color-mix(in srgb, ${d.color} 22%, transparent)`}
+                  strokeWidth={offline ? 1 : 4}
+                  style={{ filter: offline ? undefined : `drop-shadow(0 0 6px ${d.color})` }}>
+                  {!offline && (
+                    <animate attributeName="r" values="9;10;9" dur={d.state === "syncing" ? "1s" : "2.2s"} repeatCount="indefinite" begin={`${d.delay}s`}/>
+                  )}
+                </circle>
+                {/* Highlight dot — top-left specular */}
+                {!offline && (
+                  <circle cx={d.x - 3} cy={d.y - 3} r="2.2" fill="#ffffff" opacity=".55"/>
+                )}
+                {/* Label */}
+                <text x={d.x} y={d.y + 28}
+                  textAnchor="middle"
+                  fontSize="9"
+                  fontFamily="'Geist Mono', ui-monospace, monospace"
+                  letterSpacing=".4"
+                  fill="var(--muted-foreground)">
+                  {d.name}
+                </text>
+              </g>
+            );
+          })}
+        </svg>
       </div>
 
       {/* Reconnect log */}

@@ -1014,7 +1014,7 @@ function ScreenDeviceSettings() {
             <div className="icon-wrap" style={{ background: "var(--primary-soft)", color: "var(--primary)" }}>
               <svg className="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.85" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2L4.5 14h6L9 22l8.5-12h-6L13 2z"/></svg>
             </div>
-            <div className="label-wrap"><div className="t">Power plan</div><div className="s">Balanced · 4.0 A draw cap</div></div>
+            <div className="label-wrap"><div className="t">Power plan</div><div className="s">Balanced · brightness 75%</div></div>
             <svg className="ic-sm chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
           </button>
         </div>
@@ -2241,10 +2241,9 @@ function ScreenStripTypePicker() {
 // ===== Power plan picker — same bottom-sheet treatment =====
 function ScreenPowerPlanPicker() {
   const plans = [
-    { id: "balanced",    name: "Balanced",    sub: "Caps total draw at 4.0 A. Recommended.", spec: "4.0 A",  selected: true },
-    { id: "performance", name: "Performance", sub: "Full brightness, no current cap.",       spec: "Unlim." },
-    { id: "eco",         name: "Eco",         sub: "Reduce brightness to 70% to save power.", spec: "2.5 A" },
-    { id: "custom",      name: "Custom…",     sub: "Set your own draw and brightness caps." },
+    { id: "balanced",    name: "Balanced",    sub: "Brightness capped at 75%. Recommended.",  spec: "75%",     selected: true },
+    { id: "performance", name: "Performance", sub: "Full brightness, no cap.",                spec: "100%" },
+    { id: "eco",         name: "Eco",         sub: "Brightness capped at 50% to save power.", spec: "50%" },
   ];
   return (
     <Phone>
@@ -2314,11 +2313,15 @@ function ScreenPowerPlanPicker() {
 }
 
 // ===== Remove device — destructive confirm dialog =====
-function ScreenRemoveDevice() {
+// Factory reset is mandatory (not optional). If the device can't be
+// reached for an automatic reset, the user expands inline manual-reset
+// instructions on the same page.
+function ScreenRemoveDevice({ showManual = false } = {}) {
+  const [openManual, setOpenManual] = React.useState(showManual);
   return (
     <Phone>
       <Header title="Remove device"/>
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", padding: "0 22px 24px" }}>
+      <div style={{ flex: 1, overflow: "auto", padding: "0 22px 24px" }}>
         <div style={{
           width: 64, height: 64, borderRadius: 16,
           background: "rgba(220,38,38,.10)", color: "var(--destructive)",
@@ -2330,7 +2333,7 @@ function ScreenRemoveDevice() {
 
         <div className="h1" style={{ marginBottom: 6 }}>Remove PixC Lyt?</div>
         <div className="muted" style={{ fontSize: 14, marginBottom: 18 }}>
-          The device will be unpaired from your home and reset to factory defaults. You can pair it again at any time.
+          The device will be unpaired and factory-reset. You'll need to pair it again to use it.
         </div>
 
         <div className="card" style={{ padding: 14, marginBottom: 18 }}>
@@ -2345,7 +2348,7 @@ function ScreenRemoveDevice() {
             "All segments, presets, and palettes saved on this device",
             "Schedules and automations referencing this device will be paused",
             "Energy and event history will be retained for 90 days",
-          ].map((t, i, arr) => (
+          ].map((t, i) => (
             <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "8px 0", borderTop: i === 0 ? "0" : "1px solid var(--border)" }}>
               <span style={{ width: 6, height: 6, borderRadius: 999, background: "var(--destructive)", flexShrink: 0, marginTop: 6 }}/>
               <span style={{ fontSize: 13 }}>{t}</span>
@@ -2353,12 +2356,81 @@ function ScreenRemoveDevice() {
           ))}
         </div>
 
-        <label style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", border: "1px solid var(--border)", borderRadius: 10, marginBottom: 18, cursor: "pointer" }}>
-          <input type="checkbox" defaultChecked/>
-          <span style={{ fontSize: 13 }}>Also factory-reset the device (recommended)</span>
-        </label>
+        {/* Locked, mandatory factory-reset notice — replaces the previous
+            opt-in checkbox. Visually destructive to signal it's not
+            negotiable. */}
+        <div style={{
+          display: "flex", alignItems: "flex-start", gap: 10,
+          padding: "12px 12px", borderRadius: 10,
+          background: "rgba(220,38,38,.06)",
+          border: "1px solid rgba(220,38,38,.25)",
+          color: "var(--destructive)",
+          marginBottom: 12,
+          opacity: .95,
+        }}>
+          <span style={{ width: 18, height: 18, borderRadius: 4, background: "var(--destructive)", color: "#fff", display: "inline-flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 1 }}>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+          </span>
+          <div style={{ fontSize: 12.5, lineHeight: 1.45 }}>
+            <span style={{ fontWeight: 600 }}>Factory reset · always</span>
+            <span style={{ opacity: .9 }}> · The device wipes its credentials and pairing data. Pair it again to use it.</span>
+          </div>
+        </div>
 
-        <div style={{ flex: 1 }}/>
+        {/* Manual-reset fallback — opens inline on the same page when the
+            device can't be reached over the network. */}
+        <button
+          type="button"
+          onClick={() => setOpenManual(v => !v)}
+          aria-expanded={openManual}
+          className="card"
+          style={{
+            width: "100%", padding: "10px 12px", marginBottom: 18,
+            display: "flex", alignItems: "center", gap: 10,
+            cursor: "pointer", textAlign: "left", font: "inherit", color: "var(--foreground)",
+          }}>
+          <span style={{ width: 28, height: 28, borderRadius: 8, background: "var(--muted)", color: "var(--muted-foreground)", display: "inline-flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5M12 16v.01"/></svg>
+          </span>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 13, fontWeight: 500 }}>Can't connect to factory-reset?</div>
+            <div className="muted small">{openManual ? "Hide manual reset steps" : "Show manual reset steps"}</div>
+          </div>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--muted-foreground)", transform: openManual ? "rotate(180deg)" : "none", transition: "transform .15s" }}><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+
+        {openManual && (
+          <div className="card" style={{ padding: 14, marginBottom: 18 }}>
+            <div className="muted small" style={{ textTransform: "uppercase", letterSpacing: ".06em", fontWeight: 500, marginBottom: 10 }}>Manual reset · PixC Lyt</div>
+            <ol style={{ margin: 0, paddingLeft: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 12 }}>
+              {[
+                { t: "Power off the device", s: "Switch the wall plug or remove the power adapter." },
+                { t: "Hold the reset button", s: "Press and hold the small button next to the USB port." },
+                { t: "Power on while still holding", s: "Keep holding the button. The LED indicator will turn off." },
+                { t: "Release after 10 seconds", s: "Let go when the indicator pulses white — factory reset is complete." },
+                { t: "Pair the device again", s: "Open Add device on the home screen to pair it back." },
+              ].map((step, i) => (
+                <li key={i} style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
+                  <span style={{
+                    width: 22, height: 22, borderRadius: 999,
+                    background: "var(--primary-soft)", color: "var(--primary)",
+                    display: "inline-flex", alignItems: "center", justifyContent: "center",
+                    flexShrink: 0,
+                    fontSize: 11, fontWeight: 700, fontFamily: "Geist Mono, monospace",
+                  }}>{i + 1}</span>
+                  <div style={{ flex: 1, paddingTop: 1 }}>
+                    <div style={{ fontSize: 13, fontWeight: 500 }}>{step.t}</div>
+                    <div className="muted small" style={{ marginTop: 1 }}>{step.s}</div>
+                  </div>
+                </li>
+              ))}
+            </ol>
+            <div className="muted small" style={{ marginTop: 14, padding: "8px 10px", borderRadius: 8, background: "var(--muted)" }}>
+              <span style={{ fontWeight: 500, color: "var(--foreground)" }}>Indicator off?</span> Try a different USB cable or power adapter, then repeat the steps.
+            </div>
+          </div>
+        )}
+
         <button className="btn btn-block btn-lg" style={{ background: "var(--destructive)", color: "#fff" }}>Remove device</button>
         <button className="btn btn-ghost btn-lg btn-block" style={{ marginTop: 4 }}>Cancel</button>
       </div>
