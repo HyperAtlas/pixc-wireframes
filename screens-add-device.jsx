@@ -40,7 +40,7 @@ function ScreenScanning() {
       title="Add device"
       step={1}
       hero={<AddDeviceHero state="scanning" label="Scanning for devices" sub="Make sure your device is in pairing mode."/>}
-      footer={<button className="btn btn-outline btn-lg btn-block">Cancel</button>}
+      footer={<button className="btn btn-outline btn-lg btn-block" data-go="home">Cancel</button>}
     >
       <div className="card" style={{ marginTop: 8 }}>
         <div className="row">
@@ -60,7 +60,7 @@ function ScreenScanningEmpty() {
       title="Add device"
       step={1}
       hero={<AddDeviceHero state="no-signal" label="No devices found" sub="Make sure your device is powered on, in pairing mode, and within 10 meters."/>}
-      footer={<button className="btn btn-primary btn-lg btn-block">Try again</button>}
+      footer={<button className="btn btn-primary btn-lg btn-block" data-go="scan">Try again</button>}
     >
       <div className="card" style={{ marginTop: 8 }}>
         <div className="row">
@@ -87,11 +87,11 @@ function ScreenDevicesFound() {
       title="Add device"
       step={2}
       hero={<AddDeviceHero state="scanning" label={`${devices.length} devices found`} sub="Tap a device to begin pairing."/>}
-      footer={<button className="btn btn-outline btn-lg btn-block">Cancel</button>}
+      footer={<button className="btn btn-outline btn-lg btn-block" data-go="home">Cancel</button>}
     >
       <div className="card" style={{ marginTop: 6 }}>
         {devices.map((d, i) => (
-          <div className="row" key={i}>
+          <button data-go="wifi" className="row" key={i} style={{ width: "100%", border: 0, background: "transparent", textAlign: "left", cursor: "pointer", font: "inherit" }}>
             <div className="icon-wrap" style={{ background: "#0a0a0a" }}><RgbMark size={22}/></div>
             <div className="label-wrap">
               <div className="t">{d.name}</div>
@@ -104,7 +104,7 @@ function ScreenDevicesFound() {
               <rect x="12" y="0" width="2" height="10" rx=".5" fill={d.strong ? "currentColor" : "var(--border)"}/>
             </svg>
             <svg className="ic-sm chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-          </div>
+          </button>
         ))}
       </div>
     </AddDeviceShell>
@@ -123,7 +123,7 @@ function ScreenWifi() {
           <div className="muted small" style={{ textAlign: "center", marginBottom: 12 }}>
             Credentials are stored encrypted on the device.
           </div>
-          <button className="btn btn-primary btn-lg btn-block">Connect</button>
+          <button className="btn btn-primary btn-lg btn-block" data-go="pairing">Connect</button>
         </>
       }
     >
@@ -205,8 +205,8 @@ function ScreenPairSuccess() {
       hero={<AddDeviceHero state="success" label="PixC Lyt is connected" sub="Your new device is online and ready."/>}
       footer={
         <>
-          <button className="btn btn-primary btn-lg btn-block">Open device</button>
-          <button className="btn btn-ghost btn-lg btn-block" style={{ marginTop: 4 }}>Add another</button>
+          <button className="btn btn-primary btn-lg btn-block" data-go="color">Open device</button>
+          <button className="btn btn-ghost btn-lg btn-block" style={{ marginTop: 4 }} data-go="scan">Add another</button>
         </>
       }
     >

@@ -70,8 +70,8 @@ function DeviceCard({ name, room, color, kind = "bulb", on = true, brightness = 
   };
   const icon = DEVICE_ICONS[kind] || DEVICE_ICONS.bulb;
   return (
-    <div className={"device-card" + (on ? "" : " off")} style={{
-      minHeight: 168, position: "relative",
+    <div data-go="color" className={"device-card" + (on ? "" : " off")} style={{
+      minHeight: 168, position: "relative", cursor: "pointer",
       ...(on ? {
         background: `linear-gradient(155deg, ${color}33 0%, ${color}14 45%, #0a0a0a 100%), #0a0a0a`,
         color: "#fafafa",
@@ -212,7 +212,7 @@ function ScreenHome({ activeCluster = false, activeFusion = false, serversDown =
 
       {/* AI Assistant + status row */}
       <div style={{ padding: "10px 20px 0", display: "flex", gap: 10 }}>
-        <button className="btn" style={{
+        <button data-go="ai-empty" className="btn" style={{
           flex: 1, height: 56, padding: "0 14px",
           background: "var(--dark)", color: "var(--dark-fg)",
           borderRadius: 14, justifyContent: "flex-start", gap: 12,
@@ -319,10 +319,10 @@ function ScreenHome({ activeCluster = false, activeFusion = false, serversDown =
 
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
           {[
-            { id: "fusion",  t: "PixFusion",  s: "Fuse multiple devices into one sync.", icon: "fa-solid fa-layer-group" },
-            { id: "cluster", t: "PixCluster", s: "Group a room — primary drives the rest.", icon: "fa-solid fa-object-group" },
+            { id: "fusion",  go: "combination-sync", goFree: "upsell-combination", t: "PixFusion",  s: "Fuse multiple devices into one sync.", icon: "fa-solid fa-layer-group" },
+            { id: "cluster", go: "grouped-sync",     goFree: "upsell-grouped",     t: "PixCluster", s: "Group a room — primary drives the rest.", icon: "fa-solid fa-object-group" },
           ].map(tile => (
-            <button key={tile.id} className={isPro ? "card iot-card" : "card"} disabled={!isPro} style={{
+            <button key={tile.id} data-go={isPro ? tile.go : tile.goFree} className={isPro ? "card iot-card" : "card"} style={{
               padding: 12, textAlign: "left", cursor: isPro ? "pointer" : "not-allowed", font: "inherit",
               display: "flex", flexDirection: "column", gap: 6, alignItems: "flex-start",
               color: isPro ? "var(--foreground)" : "var(--muted-foreground)",
@@ -369,7 +369,7 @@ function ScreenHome({ activeCluster = false, activeFusion = false, serversDown =
               <span> / 25</span>
             </span>
           </div>
-          <button className="btn btn-outline btn-sm">
+          <button className="btn btn-outline btn-sm" data-go="scan">
             <svg className="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M5 12h14"/></svg>
             Add
           </button>

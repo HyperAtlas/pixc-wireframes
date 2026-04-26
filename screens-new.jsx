@@ -707,6 +707,7 @@ function ScreenWelcomePostAuth() {
   const choices = [
     {
       id: "add",
+      go: "scan",
       title: "Add your first device",
       sub: "Pair a PixC bulb, strip, or panel over Wi-Fi.",
       primary: true,
@@ -719,6 +720,7 @@ function ScreenWelcomePostAuth() {
     },
     {
       id: "join",
+      go: "join-home",
       title: "Join a home",
       sub: "Use a 6-character invite code from a home admin.",
       icon: (
@@ -730,6 +732,7 @@ function ScreenWelcomePostAuth() {
     },
     {
       id: "home",
+      go: "home",
       title: "Go to homescreen",
       sub: "Skip for now and explore the app.",
       icon: (
@@ -813,7 +816,7 @@ function ScreenWelcomePostAuth() {
 
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           {choices.map((c) => (
-            <button key={c.id} className="card" style={{
+            <button key={c.id} data-go={c.go} className="card" style={{
               padding: 14, display: "flex", alignItems: "center", gap: 12,
               textAlign: "left", cursor: "pointer", font: "inherit",
               background: c.primary ? "var(--primary)" : "var(--card)",

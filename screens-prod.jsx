@@ -533,8 +533,8 @@ function ScreenAppLockSetupIntro() {
         </div>
 
         <div style={{ flex: 1 }}/>
-        <button className="btn btn-primary btn-lg btn-block">Continue</button>
-        <button className="btn btn-ghost btn-lg btn-block" style={{ marginTop: 4 }}>Skip for now</button>
+        <button className="btn btn-primary btn-lg btn-block" data-go="applock-set-passcode">Continue</button>
+        <button className="btn btn-ghost btn-lg btn-block" data-go="home" style={{ marginTop: 4 }}>Skip for now</button>
       </div>
     </Phone>
   );

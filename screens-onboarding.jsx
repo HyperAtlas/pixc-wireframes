@@ -16,8 +16,8 @@ function ScreenSplash() {
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          <button className="btn btn-primary btn-lg btn-block">Get started</button>
-          <button className="btn btn-ghost btn-lg btn-block">I already have an account</button>
+          <button className="btn btn-primary btn-lg btn-block" data-go="walkthrough">Get started</button>
+          <button className="btn btn-ghost btn-lg btn-block" data-go="signin">I already have an account</button>
         </div>
       </div>
     </Phone>
@@ -88,7 +88,7 @@ function ScreenWalkthrough() {
             <span style={{ width: 6, height: 6, borderRadius: 3, background: "var(--border-strong)" }}/>
             <span style={{ width: 6, height: 6, borderRadius: 3, background: "var(--border-strong)" }}/>
           </div>
-          <button className="btn btn-primary btn-lg btn-block">Next</button>
+          <button className="btn btn-primary btn-lg btn-block" data-go="signin">Next</button>
         </div>
       </div>
     </Phone>
@@ -117,7 +117,7 @@ function ScreenSignIn() {
             <label className="field-label">Email</label>
             <input className="input" type="email" placeholder="name@example.com" defaultValue="rayon@email.com" />
           </div>
-          <button className="btn btn-primary btn-lg btn-block">Continue with email</button>
+          <button className="btn btn-primary btn-lg btn-block" data-go="otp">Continue with email</button>
 
           <div style={{ display: "flex", alignItems: "center", gap: 8, color: "var(--muted-foreground)", fontSize: 12, margin: "8px 0" }}>
             <div style={{ flex: 1, height: 1, background: "var(--border)" }}/>
@@ -178,7 +178,7 @@ function ScreenOtp({ error }) {
         }
 
         <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 28 }}>
-          <button className="btn btn-primary btn-lg btn-block">Verify</button>
+          <button className="btn btn-primary btn-lg btn-block" data-go="profile-setup">Verify</button>
           <button className="btn btn-ghost btn-lg btn-block">Resend code</button>
         </div>
       </div>
@@ -217,7 +217,7 @@ function ScreenProfileSetup() {
         </div>
 
         <div style={{ flex: 1 }}/>
-        <button className="btn btn-primary btn-lg btn-block">Continue</button>
+        <button className="btn btn-primary btn-lg btn-block" data-go="post-auth">Continue</button>
       </div>
     </Phone>
   );

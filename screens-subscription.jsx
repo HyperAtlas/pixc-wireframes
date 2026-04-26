@@ -181,7 +181,7 @@ function UpsellModal({ feature, currentUsage, limit, onClose }) {
           <span style={{ marginLeft: "auto" }} className="muted small">Cancel anytime</span>
         </div>
 
-        <button className="btn btn-primary btn-lg btn-block">Start PixC+</button>
+        <button className="btn btn-primary btn-lg btn-block" data-go="paywall">Start PixC+</button>
         <button className="btn btn-ghost btn-block" style={{ marginTop: 6 }}>Maybe later</button>
         <div className="muted small" style={{ textAlign: "center", marginTop: 10 }}>
           <span style={{ color: "var(--foreground)", fontWeight: 500 }}>Restore purchase</span>
@@ -278,7 +278,7 @@ function ScreenPaywall() {
           ))}
         </div>
 
-        <button className="btn btn-primary btn-lg btn-block">Start 7-day free trial</button>
+        <button className="btn btn-primary btn-lg btn-block" data-go="sub-manage-pro">Start 7-day free trial</button>
         <button className="btn btn-ghost btn-lg btn-block" style={{ marginTop: 4 }}>Restore purchase</button>
 
         <div className="muted small" style={{ textAlign: "center", marginTop: 14, lineHeight: 1.5 }}>
@@ -333,7 +333,7 @@ function ScreenSubscriptionManage({ plan = "pro" }) {
         </div>
 
         {!isPro && (
-          <button className="btn btn-primary btn-lg btn-block" style={{ marginBottom: 18 }}>
+          <button className="btn btn-primary btn-lg btn-block" data-go="paywall" style={{ marginBottom: 18 }}>
             <i className="fa-solid fa-crown" style={{ fontSize: 14 }}/>
             Upgrade to PixC+
           </button>
@@ -811,8 +811,8 @@ function ScreenUpsellDeviceCap() {
           <LockBadge size="sm"/>
         </div>
 
-        <button className="btn btn-primary btn-lg btn-block">Upgrade to PixC+</button>
-        <button className="btn btn-outline btn-lg btn-block" style={{ marginTop: 6 }}>Move a device to another home</button>
+        <button className="btn btn-primary btn-lg btn-block" data-go="paywall">Upgrade to PixC+</button>
+        <button className="btn btn-outline btn-lg btn-block" data-go="switch-home" style={{ marginTop: 6 }}>Move a device to another home</button>
       </div>
     </Phone>
   );
