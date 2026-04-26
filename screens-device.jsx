@@ -1000,27 +1000,23 @@ function ScreenDeviceSettings() {
         {/* LED */}
         <div className="muted small" style={{ marginBottom: 8, textTransform: "uppercase", letterSpacing: ".06em", fontWeight: 500 }}>LED</div>
         <div className="card" style={{ marginBottom: 16 }}>
-          <div className="row">
+          <button className="row" style={{ width: "100%", border: 0, background: "transparent", textAlign: "left", cursor: "pointer", font: "inherit" }}>
             <div className="icon-wrap"><svg className="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.85" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg></div>
             <div className="label-wrap"><div className="t">Strip type</div></div>
             <div className="s mono" style={{ color: "var(--muted-foreground)" }}>WS2812B</div>
-          </div>
+            <svg className="ic-sm chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+          </button>
           <div className="row">
             <div className="label-wrap"><div className="t">LED count</div><div className="s">Total addressable</div></div>
             <div className="s mono" style={{ color: "var(--muted-foreground)" }}>200</div>
           </div>
-          <div className="row">
-            <div className="label-wrap"><div className="t">Color order</div></div>
-            <div className="s mono" style={{ color: "var(--muted-foreground)" }}>GRB</div>
-          </div>
-          <div className="row">
-            <div className="label-wrap"><div className="t">Max current</div><div className="s">Limit total draw</div></div>
-            <div className="s mono" style={{ color: "var(--muted-foreground)" }}>4.0 A</div>
-          </div>
-          <div className="row">
-            <div className="label-wrap"><div className="t">Gamma correction</div></div>
-            <label className="switch"><input type="checkbox" defaultChecked/><span className="track"><span className="thumb"/></span></label>
-          </div>
+          <button className="row" style={{ width: "100%", border: 0, background: "transparent", textAlign: "left", cursor: "pointer", font: "inherit" }}>
+            <div className="icon-wrap" style={{ background: "var(--primary-soft)", color: "var(--primary)" }}>
+              <svg className="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.85" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2L4.5 14h6L9 22l8.5-12h-6L13 2z"/></svg>
+            </div>
+            <div className="label-wrap"><div className="t">Power plan</div><div className="s">Balanced · 4.0 A draw cap</div></div>
+            <svg className="ic-sm chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+          </button>
         </div>
 
         {/* OTA */}
@@ -2158,5 +2154,214 @@ Object.assign(window, {
   ScreenLightSyncSegments, ScreenLightSyncAssociate, ScreenLightSyncPixelLayout,
   ScreenPresets,
   ScreenPalettes, ScreenSegments, ScreenMiscSettings,
+  ScreenStripTypePicker, ScreenPowerPlanPicker, ScreenRemoveDevice,
   FigPillNav, ColorWheel, DeviceTopBar, DeviceIcon, PillTabs,
 });
+
+// ===== Strip type picker — bottom sheet over Device settings =====
+function ScreenStripTypePicker() {
+  const types = [
+    { id: "ws2812b", name: "WS2812B", sub: "Most common · GRB · 5 V",       leds: "5 V · 60 mA / LED",  selected: true  },
+    { id: "ws2811",  name: "WS2811",  sub: "12 V · GRB · 3-LED groups",     leds: "12 V · 240 mA / 3 LED" },
+    { id: "ws2815",  name: "WS2815",  sub: "12 V · GRB · backup data line", leds: "12 V · 60 mA / LED" },
+    { id: "sk6812",  name: "SK6812 RGBW", sub: "RGB + dedicated white",     leds: "5 V · 60 mA / LED" },
+    { id: "apa102",  name: "APA102 / DotStar", sub: "Two-wire SPI · BGR",   leds: "5 V · 60 mA / LED" },
+    { id: "lpd8806", name: "LPD8806", sub: "Older two-wire SPI · GRB",      leds: "5 V · 30 mA / LED" },
+    { id: "custom",  name: "Custom…", sub: "Pick chipset, color order, voltage manually" },
+  ];
+  return (
+    <Phone>
+      <div style={{
+        position: "absolute", inset: 0,
+        background: "var(--overlay-scrim)",
+        backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)",
+        display: "flex", alignItems: "flex-end", justifyContent: "center",
+      }}>
+        <div onClick={e => e.stopPropagation()} style={{
+          width: "100%",
+          background: "var(--card)",
+          borderTopLeftRadius: 20, borderTopRightRadius: 20,
+          padding: "16px 18px calc(28px + env(safe-area-inset-bottom, 0))",
+          boxShadow: "0 -10px 40px -10px rgba(0,0,0,.35), 0 0 0 1px var(--border)",
+          maxHeight: "92%",
+          display: "flex", flexDirection: "column",
+        }}>
+          <div style={{ display: "flex", justifyContent: "center", marginBottom: 10 }}>
+            <span style={{ width: 36, height: 4, borderRadius: 999, background: "var(--border-strong)" }}/>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
+            <div style={{ fontSize: 16, fontWeight: 600, letterSpacing: "-0.01em" }}>Strip type</div>
+            <button className="btn btn-ghost btn-icon-sm" aria-label="Close">
+              <svg className="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            </button>
+          </div>
+          <div className="muted small" style={{ marginBottom: 12 }}>
+            Pick the chipset that matches your strip. Wrong type can damage LEDs at full brightness.
+          </div>
+
+          <div style={{ flex: 1, overflow: "auto", display: "flex", flexDirection: "column", gap: 8 }}>
+            {types.map(t => (
+              <button key={t.id} className="card" style={{
+                width: "100%", padding: 12,
+                display: "flex", alignItems: "center", gap: 12,
+                textAlign: "left", cursor: "pointer", font: "inherit",
+                background: t.selected ? "var(--primary-soft)" : "var(--card)",
+                border: t.selected ? "1.5px solid var(--primary)" : "1px solid var(--border)",
+                color: "var(--foreground)",
+              }}>
+                <div style={{
+                  width: 36, height: 36, borderRadius: 10, flex: "0 0 auto",
+                  background: t.selected ? "var(--primary)" : "var(--muted)",
+                  color: t.selected ? "var(--primary-foreground)" : "var(--foreground)",
+                  display: "inline-flex", alignItems: "center", justifyContent: "center",
+                }}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.85" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="9" width="20" height="6" rx="1.5"/><path d="M5 12h.01M9 12h.01M13 12h.01M17 12h.01M21 12h.01"/></svg>
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 13.5, fontWeight: 600 }}>{t.name}</div>
+                  <div className="muted small" style={{ marginTop: 1 }}>{t.sub}</div>
+                </div>
+                {t.leds && <span className="mono small muted" style={{ flexShrink: 0, fontSize: 10.5 }}>{t.leds}</span>}
+                <span aria-hidden style={{
+                  width: 18, height: 18, borderRadius: 999,
+                  border: t.selected ? "5px solid var(--primary)" : "1.5px solid var(--border-strong)",
+                  background: "var(--background)", boxSizing: "border-box", flexShrink: 0,
+                }}/>
+              </button>
+            ))}
+          </div>
+
+          <button className="btn btn-primary btn-lg btn-block" style={{ marginTop: 14 }}>Save</button>
+        </div>
+      </div>
+    </Phone>
+  );
+}
+
+// ===== Power plan picker — same bottom-sheet treatment =====
+function ScreenPowerPlanPicker() {
+  const plans = [
+    { id: "balanced",    name: "Balanced",    sub: "Caps total draw at 4.0 A. Recommended.", spec: "4.0 A",  selected: true },
+    { id: "performance", name: "Performance", sub: "Full brightness, no current cap.",       spec: "Unlim." },
+    { id: "eco",         name: "Eco",         sub: "Reduce brightness to 70% to save power.", spec: "2.5 A" },
+    { id: "custom",      name: "Custom…",     sub: "Set your own draw and brightness caps." },
+  ];
+  return (
+    <Phone>
+      <div style={{
+        position: "absolute", inset: 0,
+        background: "var(--overlay-scrim)",
+        backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)",
+        display: "flex", alignItems: "flex-end", justifyContent: "center",
+      }}>
+        <div style={{
+          width: "100%",
+          background: "var(--card)",
+          borderTopLeftRadius: 20, borderTopRightRadius: 20,
+          padding: "16px 18px calc(28px + env(safe-area-inset-bottom, 0))",
+          boxShadow: "0 -10px 40px -10px rgba(0,0,0,.35), 0 0 0 1px var(--border)",
+        }}>
+          <div style={{ display: "flex", justifyContent: "center", marginBottom: 10 }}>
+            <span style={{ width: 36, height: 4, borderRadius: 999, background: "var(--border-strong)" }}/>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
+            <div style={{ fontSize: 16, fontWeight: 600, letterSpacing: "-0.01em" }}>Power plan</div>
+            <button className="btn btn-ghost btn-icon-sm" aria-label="Close">
+              <svg className="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            </button>
+          </div>
+          <div className="muted small" style={{ marginBottom: 12 }}>
+            Caps total current draw and brightness. Protects the strip and PSU on long runs.
+          </div>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {plans.map(p => (
+              <button key={p.id} className="card" style={{
+                width: "100%", padding: 12,
+                display: "flex", alignItems: "center", gap: 12,
+                textAlign: "left", cursor: "pointer", font: "inherit",
+                background: p.selected ? "var(--primary-soft)" : "var(--card)",
+                border: p.selected ? "1.5px solid var(--primary)" : "1px solid var(--border)",
+                color: "var(--foreground)",
+              }}>
+                <div style={{
+                  width: 36, height: 36, borderRadius: 10, flex: "0 0 auto",
+                  background: p.selected ? "var(--primary)" : "var(--muted)",
+                  color: p.selected ? "var(--primary-foreground)" : "var(--foreground)",
+                  display: "inline-flex", alignItems: "center", justifyContent: "center",
+                }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.85" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2L4.5 14h6L9 22l8.5-12h-6L13 2z"/></svg>
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 13.5, fontWeight: 600 }}>{p.name}</div>
+                  <div className="muted small" style={{ marginTop: 1 }}>{p.sub}</div>
+                </div>
+                {p.spec && <span className="mono small muted" style={{ flexShrink: 0 }}>{p.spec}</span>}
+                <span aria-hidden style={{
+                  width: 18, height: 18, borderRadius: 999,
+                  border: p.selected ? "5px solid var(--primary)" : "1.5px solid var(--border-strong)",
+                  background: "var(--background)", boxSizing: "border-box", flexShrink: 0,
+                }}/>
+              </button>
+            ))}
+          </div>
+
+          <button className="btn btn-primary btn-lg btn-block" style={{ marginTop: 14 }}>Save</button>
+        </div>
+      </div>
+    </Phone>
+  );
+}
+
+// ===== Remove device — destructive confirm dialog =====
+function ScreenRemoveDevice() {
+  return (
+    <Phone>
+      <Header title="Remove device"/>
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", padding: "0 22px 24px" }}>
+        <div style={{
+          width: 64, height: 64, borderRadius: 16,
+          background: "rgba(220,38,38,.10)", color: "var(--destructive)",
+          display: "inline-flex", alignItems: "center", justifyContent: "center",
+          marginBottom: 16,
+        }}>
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.85" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M6 6l1 14a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-14"/><path d="M10 11v6M14 11v6"/></svg>
+        </div>
+
+        <div className="h1" style={{ marginBottom: 6 }}>Remove PixC Lyt?</div>
+        <div className="muted" style={{ fontSize: 14, marginBottom: 18 }}>
+          The device will be unpaired from your home and reset to factory defaults. You can pair it again at any time.
+        </div>
+
+        <div className="card" style={{ padding: 14, marginBottom: 18 }}>
+          <div className="row" style={{ padding: "8px 0", border: 0 }}>
+            <div className="icon-wrap" style={{ background: "#0a0a0a" }}><RgbMark size={20}/></div>
+            <div className="label-wrap"><div className="t">PixC Lyt</div><div className="s">Living room · 200 LEDs · firmware 2.4.1</div></div>
+          </div>
+        </div>
+
+        <div className="card" style={{ padding: 14, marginBottom: 18 }}>
+          {[
+            "All segments, presets, and palettes saved on this device",
+            "Schedules and automations referencing this device will be paused",
+            "Energy and event history will be retained for 90 days",
+          ].map((t, i, arr) => (
+            <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "8px 0", borderTop: i === 0 ? "0" : "1px solid var(--border)" }}>
+              <span style={{ width: 6, height: 6, borderRadius: 999, background: "var(--destructive)", flexShrink: 0, marginTop: 6 }}/>
+              <span style={{ fontSize: 13 }}>{t}</span>
+            </div>
+          ))}
+        </div>
+
+        <label style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", border: "1px solid var(--border)", borderRadius: 10, marginBottom: 18, cursor: "pointer" }}>
+          <input type="checkbox" defaultChecked/>
+          <span style={{ fontSize: 13 }}>Also factory-reset the device (recommended)</span>
+        </label>
+
+        <div style={{ flex: 1 }}/>
+        <button className="btn btn-block btn-lg" style={{ background: "var(--destructive)", color: "#fff" }}>Remove device</button>
+        <button className="btn btn-ghost btn-lg btn-block" style={{ marginTop: 4 }}>Cancel</button>
+      </div>
+    </Phone>
+  );
+}

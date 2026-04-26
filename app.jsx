@@ -264,6 +264,9 @@ function App() {
           <DCArtboard id="power-details" label="Power details" width={375} height={812}><ScreenPowerDetails/></DCArtboard>
           <DCArtboard id="misc" label="Misc settings" width={375} height={812}><ScreenMiscSettings/></DCArtboard>
           <DCArtboard id="dev-settings" label="Device settings (Wi-Fi · LED · OTA)" width={375} height={812}><ScreenDeviceSettings/></DCArtboard>
+          <DCArtboard id="strip-type-picker" label="Strip type picker (popup)" width={375} height={812}><ScreenStripTypePicker/></DCArtboard>
+          <DCArtboard id="power-plan-picker" label="Power plan picker (popup)" width={375} height={812}><ScreenPowerPlanPicker/></DCArtboard>
+          <DCArtboard id="remove-device" label="Remove device · confirm" width={375} height={812}><ScreenRemoveDevice/></DCArtboard>
           <DCArtboard id="ota-progress" label="Firmware update · in progress" width={375} height={812}><ScreenOtaProgress/></DCArtboard>
           <DCArtboard id="ota-success" label="Firmware update · success" width={375} height={812}><ScreenOtaSuccess/></DCArtboard>
           <DCArtboard id="ota-failed" label="Firmware update · failed" width={375} height={812}><ScreenOtaFailed/></DCArtboard>
