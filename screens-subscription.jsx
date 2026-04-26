@@ -16,10 +16,14 @@
 const PIXC_PRICE = "₹199";
 const PIXC_PRICE_PERIOD = "month";
 
+// Device cap per home is a hardware ceiling — applies to BOTH tiers.
+const PIXC_DEVICE_CAP = 25;
+
 const PIXC_TIERS = {
   free: {
     name: "PixC Free",
     price: "₹0",
+    devicesPerHome: PIXC_DEVICE_CAP,
     homes: "2",
     members: "3 total",
     automations: "10",
@@ -32,6 +36,7 @@ const PIXC_TIERS = {
   pro: {
     name: "PixC+",
     price: PIXC_PRICE,
+    devicesPerHome: PIXC_DEVICE_CAP,
     homes: "Unlimited",
     members: "6 max",
     automations: "Unlimited",
@@ -113,7 +118,7 @@ function UpsellModal({ feature, currentUsage, limit, onClose }) {
     ai:              { title: "1,000 AI prompts a week", body: "Free includes 30 prompts per 7 days. PixC+ raises this to 1,000 — never wait for the reset.", icon: <i className="fa-solid fa-sparkles"/> },
     energy:          { title: "12 months of energy history", body: "Free shows the last 14 days. PixC+ keeps a full year, with weekly and monthly breakdowns.", icon: <i className="fa-solid fa-bolt"/> },
     notifications:   { title: "90 days of notifications", body: "Free keeps the last 7 days. PixC+ retains 90 — handy when you're piecing together what happened.", icon: <i className="fa-solid fa-bell"/> },
-    combinationSync: { title: "Combination Sync · PixC+", body: "Pair multiple devices in one LightSync session — e.g. a strip behind the TV + bulbs behind the couch all reacting together.", icon: <i className="fa-solid fa-layer-group"/> },
+    combinationSync: { title: "PixFusion · PixC+", body: "Fuse multiple devices into one LightSync session — e.g. a strip behind the TV plus bulbs behind the couch all reacting together to the same source.", icon: <i className="fa-solid fa-layer-group"/> },
     groupedSync:     { title: "PixCluster · PixC+", body: "Group a room as one sync target. Pick a primary device — its settings (effect, palette, brightness) are inherited by every device in the cluster.", icon: <i className="fa-solid fa-object-group"/> },
   }[feature] || { title: "Upgrade to PixC+", body: "Unlock the full PixC experience.", icon: <i className="fa-solid fa-crown"/> };
 
@@ -193,14 +198,14 @@ function UpsellModal({ feature, currentUsage, limit, onClose }) {
 // and the "see full comparison" footer.
 function ScreenPaywall() {
   const rows = [
-    { lever: "Devices",            free: "Unlimited", pro: "Unlimited" },
+    { lever: "Devices per home",   free: "25",        pro: "25" },
     { lever: "Homes",              free: "2",         pro: "Unlimited" },
     { lever: "Family members",     free: "3",         pro: "6" },
     { lever: "Automations",        free: "10",        pro: "Unlimited" },
     { lever: "AI prompts / week",  free: "30",        pro: "1,000" },
     { lever: "Energy history",     free: "14 d",      pro: "12 mo" },
     { lever: "Notifications",      free: "7 d",       pro: "90 d" },
-    { lever: "Combination Sync",   free: "—",         pro: "✓" },
+    { lever: "PixFusion",   free: "—",         pro: "✓" },
     { lever: "PixCluster",         free: "—",         pro: "✓" },
   ];
   return (
@@ -366,7 +371,7 @@ function ScreenSubscriptionManage({ plan = "pro" }) {
                 "1,000 AI prompts / week",
                 "12 months of energy history",
                 "90 days of notifications",
-                "Combination Sync + PixCluster",
+                "PixFusion + PixCluster",
               ].map((t, i) => (
                 <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "6px 0" }}>
                   <span style={{ width: 18, height: 18, borderRadius: 999, background: "color-mix(in srgb, var(--primary) 18%, transparent)", color: "var(--primary)", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
@@ -408,7 +413,7 @@ function ScreenSubscriptionManage({ plan = "pro" }) {
                 "1,000 AI prompts / week",
                 "12 months energy history",
                 "90 days notifications",
-                "Combination Sync + PixCluster",
+                "PixFusion + PixCluster",
               ].map((t, i) => (
                 <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "6px 0" }}>
                   <span style={{ width: 18, height: 18, borderRadius: 999, background: "color-mix(in srgb, var(--primary) 14%, transparent)", color: "var(--primary)", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
@@ -451,7 +456,7 @@ function ScreenCancelConfirm() {
             "Members 4–6 will be removed",
             "Automations 11+ will pause",
             "Energy history older than 14 days will be hidden",
-            "Combination Sync and PixCluster will turn off",
+            "PixFusion and PixCluster will turn off",
           ].map((t, i, arr) => (
             <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 0", borderTop: i === 0 ? "0" : "1px solid var(--border)" }}>
               <span style={{ width: 6, height: 6, borderRadius: 999, background: "var(--destructive)", flexShrink: 0 }}/>
@@ -468,7 +473,7 @@ function ScreenCancelConfirm() {
   );
 }
 
-// ----- Combination Sync setup --------------------------------------------
+// ----- PixFusion setup --------------------------------------------
 // Multi-device sync session — pick devices that should react to one source.
 function ScreenCombinationSync() {
   const devices = [
@@ -480,7 +485,7 @@ function ScreenCombinationSync() {
   ];
   return (
     <Phone>
-      <Header title="Combination Sync" right={<LockBadge/>}/>
+      <Header title="PixFusion" right={<LockBadge/>}/>
       <div style={{ flex: 1, overflow: "auto", padding: "0 20px 24px" }}>
         <div className="muted" style={{ fontSize: 13, marginBottom: 14 }}>
           Sync any combination of devices to a single source. Pick the lights that should react together.
@@ -525,7 +530,7 @@ function ScreenCombinationSync() {
           <div className="small">All selected devices share the same color stream. Use Grouped Sync to map them spatially.</div>
         </div>
 
-        <button className="btn btn-primary btn-lg btn-block">Start Combination Sync</button>
+        <button className="btn btn-primary btn-lg btn-block">Start PixFusion</button>
       </div>
       <FigPillNav active="extras"/>
     </Phone>
@@ -736,7 +741,7 @@ function ScreenUpsellNotifications() {
 function ScreenUpsellCombinationSync() {
   return (
     <Phone>
-      <UpsellBackdrop title="LightSync" summary="Tap on Combination Sync"/>
+      <UpsellBackdrop title="LightSync" summary="Tap on PixFusion"/>
       <UpsellModal feature="combinationSync"/>
     </Phone>
   );
@@ -750,12 +755,101 @@ function ScreenUpsellGroupedSync() {
   );
 }
 
+// Device-cap reached — 25 / 25 in this home. Hardware ceiling, but the
+// upsell points at PixC+ unlimited homes (each with 25 devices) as the path.
+function ScreenUpsellDeviceCap() {
+  return (
+    <Phone>
+      <Header title="Add device" right={
+        <button className="btn btn-ghost btn-icon-sm" aria-label="Close">
+          <svg className="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      }/>
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", padding: "0 22px 24px" }}>
+        <div style={{
+          width: 64, height: 64, borderRadius: 16,
+          background: "rgba(220,38,38,.10)", color: "var(--destructive)",
+          display: "inline-flex", alignItems: "center", justifyContent: "center",
+          marginBottom: 16,
+        }}>
+          <i className="fa-solid fa-house-circle-exclamation" style={{ fontSize: 24 }}/>
+        </div>
+
+        <div className="h2" style={{ marginBottom: 6 }}>Home is full · 25 of 25</div>
+        <div className="muted" style={{ fontSize: 14, marginBottom: 18 }}>
+          A single home supports 25 devices — a hardware ceiling that keeps the mesh stable. Move a device to another home, remove one, or add another home with PixC+.
+        </div>
+
+        <div className="card" style={{ padding: 14, marginBottom: 18 }}>
+          <div className="muted small" style={{ textTransform: "uppercase", letterSpacing: ".06em" }}>This home</div>
+          <div style={{ display: "flex", alignItems: "baseline", gap: 6, marginTop: 6 }}>
+            <span className="mono" style={{ fontSize: 26, fontWeight: 700, letterSpacing: "-0.01em", fontVariantNumeric: "tabular-nums" }}>25</span>
+            <span className="muted">/ 25 devices</span>
+          </div>
+          <div style={{ marginTop: 10, height: 4, borderRadius: 999, background: "var(--muted)", overflow: "hidden" }}>
+            <span style={{ display: "block", width: "100%", height: "100%", background: "var(--destructive)", borderRadius: 999 }}/>
+          </div>
+        </div>
+
+        <div style={{ flex: 1 }}/>
+
+        <div className="card iot-card" style={{ padding: 14, marginBottom: 12, display: "flex", gap: 12, alignItems: "center" }}>
+          <span style={{
+            width: 36, height: 36, borderRadius: 10,
+            background: "linear-gradient(180deg, color-mix(in srgb, var(--primary) 22%, var(--card)), var(--card))",
+            border: "1px solid color-mix(in srgb, var(--primary) 35%, var(--border))",
+            color: "var(--primary)",
+            display: "inline-flex", alignItems: "center", justifyContent: "center",
+            flexShrink: 0,
+          }}>
+            <i className="fa-solid fa-plus" style={{ fontSize: 13 }}/>
+          </span>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontSize: 13, fontWeight: 600 }}>Add another home with PixC+</div>
+            <div className="muted" style={{ fontSize: 11.5, marginTop: 2, lineHeight: 1.4 }}>
+              Free is capped at 2 homes. PixC+ unlocks unlimited homes — 25 devices each.
+            </div>
+          </div>
+          <LockBadge size="sm"/>
+        </div>
+
+        <button className="btn btn-primary btn-lg btn-block">Upgrade to PixC+</button>
+        <button className="btn btn-outline btn-lg btn-block" style={{ marginTop: 6 }}>Move a device to another home</button>
+      </div>
+    </Phone>
+  );
+}
+
+// Reusable subscription settings row — drop into Settings list.
+function SubscriptionSettingsRow({ plan = "free" }) {
+  const isPro = plan === "pro";
+  return (
+    <div className="row">
+      <div className="icon-wrap" style={{
+        background: isPro ? "var(--primary-soft)" : "var(--muted)",
+        color: isPro ? "var(--primary)" : "var(--muted-foreground)",
+      }}>
+        <i className={isPro ? "fa-solid fa-crown" : "fa-solid fa-circle-user"}/>
+      </div>
+      <div className="label-wrap">
+        <div className="t" style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          Subscription
+          {!isPro && <LockBadge size="sm"/>}
+        </div>
+        <div className="s">{isPro ? "PixC+ · renews Apr 26" : "PixC Free · upgrade for unlimited homes"}</div>
+      </div>
+      <svg className="ic-sm chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+    </div>
+  );
+}
+
 Object.assign(window, {
-  PIXC_TIERS, PIXC_PRICE, PIXC_PRICE_PERIOD,
-  usePixcPlan, LockBadge, UpsellModal,
+  PIXC_TIERS, PIXC_PRICE, PIXC_PRICE_PERIOD, PIXC_DEVICE_CAP,
+  usePixcPlan, LockBadge, UpsellModal, SubscriptionSettingsRow,
   ScreenPaywall, ScreenSubscriptionManage, ScreenCancelConfirm,
   ScreenCombinationSync, ScreenGroupedLightSync,
   ScreenUpsellHomes, ScreenUpsellMembers, ScreenUpsellAutomations, ScreenUpsellAILimit,
   ScreenUpsellEnergy, ScreenUpsellNotifications,
   ScreenUpsellCombinationSync, ScreenUpsellGroupedSync,
+  ScreenUpsellDeviceCap,
 });

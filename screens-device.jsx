@@ -1171,7 +1171,7 @@ function ScreenLightSyncSetup() {
         <div className="muted small" style={{ textTransform: "uppercase", letterSpacing: ".06em", fontWeight: 500, marginBottom: 8 }}>Multi-device · PixC+</div>
         <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 18 }}>
           {[
-            { id: "combo",   t: "Combination Sync",       s: "Pair multiple devices in one sync session.",
+            { id: "combo",   t: "PixFusion",       s: "Fuse multiple devices into one sync session.",
               icon: <i className="fa-solid fa-layer-group" style={{ fontSize: 16 }}/> },
             { id: "grouped", t: "PixCluster",  s: "Group a room with a primary — others inherit settings.",
               icon: <i className="fa-solid fa-object-group" style={{ fontSize: 16 }}/> },

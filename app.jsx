@@ -153,25 +153,53 @@ function App() {
         </DCSection>
 
         <DCSection id="home" title="04 · Home, Rooms & Account">
+          {/* Home tab */}
           <DCArtboard id="home-welcome" label="Daily welcome (warm)" width={375} height={812}><ScreenHomeWelcome/></DCArtboard>
           <DCArtboard id="home-empty" label="Home · empty (no devices)" width={375} height={812}><ScreenHomeEmpty/></DCArtboard>
           <DCArtboard id="home" label="Home · populated" width={375} height={812}><ScreenHome/></DCArtboard>
+          <DCArtboard id="search" label="Search" width={375} height={812}><ScreenSearch/></DCArtboard>
+
+          {/* PixC AI */}
           <DCArtboard id="ai-empty" label="PixC AI · first launch" width={375} height={812}><ScreenTwotoAIEmpty/></DCArtboard>
           <DCArtboard id="ai-chat" label="PixC AI · in conversation" width={375} height={812}><ScreenTwotoAI/></DCArtboard>
-          <DCArtboard id="search" label="Search" width={375} height={812}><ScreenSearch/></DCArtboard>
+          <DCArtboard id="upsell-ai" label="PixC AI · weekly limit hit (upsell)" width={375} height={812}><ScreenUpsellAILimit/></DCArtboard>
+
+          {/* Rooms */}
           <DCArtboard id="add-room" label="Add room" width={375} height={812}><ScreenAddRoom/></DCArtboard>
           <DCArtboard id="edit-room" label="Edit room" width={375} height={812}><ScreenEditRoom/></DCArtboard>
           <DCArtboard id="add-device-to-room" label="Add device to room" width={375} height={812}><ScreenAddDeviceToRoom/></DCArtboard>
-          <DCArtboard id="settings" label="Settings (incl. App lock)" width={375} height={812}><ScreenSettings/></DCArtboard>
+
+          {/* Homes (multi-home) */}
           <DCArtboard id="switch-home" label="Switch home" width={375} height={812}><ScreenSwitchHome/></DCArtboard>
+          <DCArtboard id="upsell-homes" label="Switch home · 3rd home (upsell)" width={375} height={812}><ScreenUpsellHomes/></DCArtboard>
+
+          {/* Family / sharing */}
           <DCArtboard id="family-guests" label="Family &amp; guests" width={375} height={812}><ScreenFamilyGuests/></DCArtboard>
-          <DCArtboard id="profile" label="Profile" width={375} height={812}><ScreenProfile/></DCArtboard>
-          <DCArtboard id="notifications-empty" label="Notifications · empty" width={375} height={812}><ScreenNotificationsEmpty/></DCArtboard>
-          <DCArtboard id="notifications" label="Notifications · populated" width={375} height={812}><ScreenNotifications/></DCArtboard>
-          <DCArtboard id="energy-empty" label="Energy · empty" width={375} height={812}><ScreenEnergyEmpty/></DCArtboard>
-          <DCArtboard id="energy" label="Energy · populated" width={375} height={812}><ScreenEnergy/></DCArtboard>
+          <DCArtboard id="upsell-members" label="Family · 4th member (upsell)" width={375} height={812}><ScreenUpsellMembers/></DCArtboard>
           <DCArtboard id="sharing-empty" label="Sharing · empty" width={375} height={812}><ScreenSharingEmpty/></DCArtboard>
           <DCArtboard id="sharing" label="Sharing · populated" width={375} height={812}><ScreenSharing/></DCArtboard>
+
+          {/* Notifications */}
+          <DCArtboard id="notifications-empty" label="Notifications · empty" width={375} height={812}><ScreenNotificationsEmpty/></DCArtboard>
+          <DCArtboard id="notifications" label="Notifications · populated" width={375} height={812}><ScreenNotifications/></DCArtboard>
+          <DCArtboard id="upsell-notifications" label="Notifications · past 7 d (upsell)" width={375} height={812}><ScreenUpsellNotifications/></DCArtboard>
+
+          {/* Energy */}
+          <DCArtboard id="energy-empty" label="Energy · empty" width={375} height={812}><ScreenEnergyEmpty/></DCArtboard>
+          <DCArtboard id="energy" label="Energy · populated" width={375} height={812}><ScreenEnergy/></DCArtboard>
+          <DCArtboard id="upsell-energy" label="Energy · past 14 d (upsell)" width={375} height={812}><ScreenUpsellEnergy/></DCArtboard>
+
+          {/* Account */}
+          <DCArtboard id="profile" label="Profile" width={375} height={812}><ScreenProfile/></DCArtboard>
+          <DCArtboard id="settings" label="Settings (incl. App lock + Subscription)" width={375} height={812}><ScreenSettings/></DCArtboard>
+
+          {/* Subscription pages */}
+          <DCArtboard id="paywall" label="Paywall · pricing" width={375} height={812}><ScreenPaywall/></DCArtboard>
+          <DCArtboard id="sub-manage-free" label="Subscription · current Free" width={375} height={812}><ScreenSubscriptionManage plan="free"/></DCArtboard>
+          <DCArtboard id="sub-manage-pro" label="Subscription · current PixC+" width={375} height={812}><ScreenSubscriptionManage plan="pro"/></DCArtboard>
+          <DCArtboard id="sub-cancel" label="Subscription · cancel confirm" width={375} height={812}><ScreenCancelConfirm/></DCArtboard>
+
+          {/* Help + dangerous */}
           <DCArtboard id="help" label="Help &amp; support" width={375} height={812}><ScreenHelp/></DCArtboard>
           <DCArtboard id="sign-out-confirm" label="Sign-out confirm" width={375} height={812}><ScreenSignOutConfirm/></DCArtboard>
           <DCArtboard id="delete-account" label="Delete account" width={375} height={812}><ScreenDeleteAccount/></DCArtboard>
@@ -183,10 +211,11 @@ function App() {
           <DCArtboard id="found" label="Devices found" width={375} height={812}><ScreenDevicesFound/></DCArtboard>
           <DCArtboard id="wifi" label="Wi-Fi setup" width={375} height={812}><ScreenWifi/></DCArtboard>
           <DCArtboard id="pairing" label="Pairing" width={375} height={812}><ScreenPairing/></DCArtboard>
-          <DCArtboard id="success" label="Success" width={375} height={812}><ScreenPairSuccess/></DCArtboard>
+          <DCArtboard id="success" label="Success (incl. 1-mo PixC+ promo)" width={375} height={812}><ScreenPairSuccess/></DCArtboard>
           <DCArtboard id="pairing-failed" label="Pairing failed" width={375} height={812}><ScreenPairingFailed/></DCArtboard>
           <DCArtboard id="wifi-failed" label="Wi-Fi connect failed" width={375} height={812}><ScreenWifiFailed/></DCArtboard>
           <DCArtboard id="troubleshoot" label="Device offline · troubleshoot" width={375} height={812}><ScreenDeviceTroubleshoot/></DCArtboard>
+          <DCArtboard id="upsell-device-cap" label="Home full · 25/25 (upsell)" width={375} height={812}><ScreenUpsellDeviceCap/></DCArtboard>
         </DCSection>
 
         <DCSection id="device" title="06 · Device control">
@@ -213,10 +242,18 @@ function App() {
           <DCArtboard id="lightsync-running-tv" label="LightSync running · TV" width={375} height={812}><ScreenLightSync mode="tv"/></DCArtboard>
           <DCArtboard id="lightsync-running-wireless" label="LightSync running · Wireless" width={375} height={812}><ScreenLightSync mode="wireless"/></DCArtboard>
           <DCArtboard id="lightsync-running-audio" label="LightSync running · Audio" width={375} height={812}><ScreenLightSync mode="audio"/></DCArtboard>
+
+          {/* PixC+ multi-device sync */}
+          <DCArtboard id="combination-sync" label="PixFusion · setup (PixC+)" width={375} height={812}><ScreenCombinationSync/></DCArtboard>
+          <DCArtboard id="upsell-combination" label="PixFusion · tap from Free (upsell)" width={375} height={812}><ScreenUpsellCombinationSync/></DCArtboard>
+          <DCArtboard id="grouped-sync" label="PixCluster · setup (PixC+)" width={375} height={812}><ScreenGroupedLightSync/></DCArtboard>
+          <DCArtboard id="upsell-grouped" label="PixCluster · tap from Free (upsell)" width={375} height={812}><ScreenUpsellGroupedSync/></DCArtboard>
+
           <DCArtboard id="presets-empty" label="Presets · empty" width={375} height={812}><ScreenPresetsEmpty/></DCArtboard>
           <DCArtboard id="presets" label="Presets gallery" width={375} height={812}><ScreenPresets/></DCArtboard>
           <DCArtboard id="schedule" label="Automations" width={375} height={812}><ScreenSchedule/></DCArtboard>
           <DCArtboard id="automation-new" label="New automation" width={375} height={812}><ScreenNewAutomation/></DCArtboard>
+          <DCArtboard id="upsell-automations" label="Automations · 11th hit (upsell)" width={375} height={812}><ScreenUpsellAutomations/></DCArtboard>
           <DCArtboard id="power-details" label="Power details" width={375} height={812}><ScreenPowerDetails/></DCArtboard>
           <DCArtboard id="misc" label="Misc settings" width={375} height={812}><ScreenMiscSettings/></DCArtboard>
           <DCArtboard id="dev-settings" label="Device settings (Wi-Fi · LED · OTA)" width={375} height={812}><ScreenDeviceSettings/></DCArtboard>
@@ -225,23 +262,6 @@ function App() {
           <DCArtboard id="ota-failed" label="Firmware update · failed" width={375} height={812}><ScreenOtaFailed/></DCArtboard>
           <DCArtboard id="generic-error" label="Generic error" width={375} height={812}><ScreenGenericError/></DCArtboard>
           <DCArtboard id="move-device" label="Move device" width={375} height={812}><ScreenMoveDevice/></DCArtboard>
-        </DCSection>
-
-        <DCSection id="subscription" title="07 · Subscription (PixC+)">
-          <DCArtboard id="paywall" label="Paywall · pricing" width={375} height={812}><ScreenPaywall/></DCArtboard>
-          <DCArtboard id="sub-manage-free" label="Subscription · current Free" width={375} height={812}><ScreenSubscriptionManage plan="free"/></DCArtboard>
-          <DCArtboard id="sub-manage-pro" label="Subscription · current PixC+" width={375} height={812}><ScreenSubscriptionManage plan="pro"/></DCArtboard>
-          <DCArtboard id="sub-cancel" label="Subscription · cancel confirm" width={375} height={812}><ScreenCancelConfirm/></DCArtboard>
-          <DCArtboard id="combination-sync" label="Combination Sync (PixC+)" width={375} height={812}><ScreenCombinationSync/></DCArtboard>
-          <DCArtboard id="grouped-sync" label="PixCluster (PixC+)" width={375} height={812}><ScreenGroupedLightSync/></DCArtboard>
-          <DCArtboard id="upsell-homes" label="Upsell · adding 3rd home" width={375} height={812}><ScreenUpsellHomes/></DCArtboard>
-          <DCArtboard id="upsell-members" label="Upsell · 4th member" width={375} height={812}><ScreenUpsellMembers/></DCArtboard>
-          <DCArtboard id="upsell-automations" label="Upsell · 11th automation" width={375} height={812}><ScreenUpsellAutomations/></DCArtboard>
-          <DCArtboard id="upsell-ai" label="Upsell · AI weekly limit" width={375} height={812}><ScreenUpsellAILimit/></DCArtboard>
-          <DCArtboard id="upsell-energy" label="Upsell · energy beyond 14d" width={375} height={812}><ScreenUpsellEnergy/></DCArtboard>
-          <DCArtboard id="upsell-notifications" label="Upsell · notifications beyond 7d" width={375} height={812}><ScreenUpsellNotifications/></DCArtboard>
-          <DCArtboard id="upsell-combination" label="Upsell · Combination Sync tap" width={375} height={812}><ScreenUpsellCombinationSync/></DCArtboard>
-          <DCArtboard id="upsell-grouped" label="Upsell · PixCluster tap" width={375} height={812}><ScreenUpsellGroupedSync/></DCArtboard>
         </DCSection>
 
       </DesignCanvas>

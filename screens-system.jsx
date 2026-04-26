@@ -92,6 +92,12 @@ function ScreenSettings() {
           </div>
         </div>
 
+        {/* Subscription — drop in the row component from screens-subscription.jsx */}
+        <div className="muted small" style={{ marginBottom: 8, textTransform: "uppercase", letterSpacing: ".06em" }}>Subscription</div>
+        <div className="card" style={{ marginBottom: 16 }}>
+          {window.SubscriptionSettingsRow ? <window.SubscriptionSettingsRow plan="free"/> : null}
+        </div>
+
         <div className="muted small" style={{ marginBottom: 8, textTransform: "uppercase", letterSpacing: ".06em" }}>About</div>
         <div className="card">
           <div className="row">

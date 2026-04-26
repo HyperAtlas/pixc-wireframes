@@ -207,10 +207,56 @@ function ScreenHome() {
         </div>
       </div>
 
+      {/* Sync features — quick entry to PixFusion & PixCluster */}
+      <div style={{ padding: "16px 20px 0" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
+          <div className="h3">Sync</div>
+          <span className="muted small">PixC+ features</span>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+          <button className="card iot-card" style={{
+            padding: 12, textAlign: "left", cursor: "pointer", font: "inherit",
+            display: "flex", flexDirection: "column", gap: 6, alignItems: "flex-start",
+            color: "var(--foreground)",
+          }}>
+            <span style={{
+              width: 32, height: 32, borderRadius: 9,
+              background: "var(--primary-soft)", color: "var(--primary)",
+              display: "inline-flex", alignItems: "center", justifyContent: "center",
+            }}>
+              <i className="fa-solid fa-layer-group" style={{ fontSize: 14 }}/>
+            </span>
+            <div style={{ fontSize: 13, fontWeight: 600 }}>PixFusion</div>
+            <div className="muted small" style={{ fontSize: 11, lineHeight: 1.35 }}>Fuse multiple devices into one sync.</div>
+          </button>
+          <button className="card iot-card" style={{
+            padding: 12, textAlign: "left", cursor: "pointer", font: "inherit",
+            display: "flex", flexDirection: "column", gap: 6, alignItems: "flex-start",
+            color: "var(--foreground)",
+          }}>
+            <span style={{
+              width: 32, height: 32, borderRadius: 9,
+              background: "var(--primary-soft)", color: "var(--primary)",
+              display: "inline-flex", alignItems: "center", justifyContent: "center",
+            }}>
+              <i className="fa-solid fa-object-group" style={{ fontSize: 14 }}/>
+            </span>
+            <div style={{ fontSize: 13, fontWeight: 600 }}>PixCluster</div>
+            <div className="muted small" style={{ fontSize: 11, lineHeight: 1.35 }}>Group a room — primary drives the rest.</div>
+          </button>
+        </div>
+      </div>
+
       {/* Devices */}
       <div style={{ padding: "16px 20px 0", flex: 1, overflow: "hidden" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-          <div className="h3">Devices</div>
+          <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
+            <div className="h3">Devices</div>
+            <span className="mono small" style={{ color: "var(--muted-foreground)", letterSpacing: ".04em" }}>
+              <span style={{ color: "var(--foreground)", fontWeight: 600 }}>12</span>
+              <span> / 25</span>
+            </span>
+          </div>
           <button className="btn btn-outline btn-sm">
             <svg className="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M5 12h14"/></svg>
             Add
