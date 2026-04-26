@@ -214,7 +214,7 @@ function ScreenSharing() {
 
       <div style={{ flex: 1, overflow: "auto", padding: "0 20px 24px" }}>
         <div className="card" style={{ padding: 14, background: "var(--muted)", display: "flex", alignItems: "center", gap: 12 }}>
-          <div style={{ width: 40, height: 40, borderRadius: 10, background: "white", border: "1px solid var(--border)", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+          <div style={{ width: 40, height: 40, borderRadius: 10, background: "var(--card)", color: "var(--foreground)", border: "1px solid var(--border)", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
             <svg className="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
           </div>
           <div style={{ flex: 1 }}>

@@ -8,9 +8,9 @@ function RoomChip({ icon, label, active, count }) {
     }}>
       <span style={{
         width: 64, height: 64, borderRadius: 16,
-        background: active ? "var(--dark)" : "white",
-        color: active ? "white" : "var(--foreground)",
-        border: `1px solid ${active ? "var(--dark)" : "var(--border)"}`,
+        background: active ? "var(--foreground)" : "var(--card)",
+        color: active ? "var(--background)" : "var(--foreground)",
+        border: `1px solid ${active ? "var(--foreground)" : "var(--border)"}`,
         display: "inline-flex", alignItems: "center", justifyContent: "center",
         position: "relative"
       }}>
@@ -18,7 +18,7 @@ function RoomChip({ icon, label, active, count }) {
         {count != null && (
           <span style={{
             position: "absolute", top: -6, right: -6,
-            background: "white", color: "var(--foreground)",
+            background: "var(--background)", color: "var(--foreground)",
             border: "1px solid var(--border)",
             borderRadius: 999, minWidth: 20, height: 20, padding: "0 6px",
             fontSize: 11, fontWeight: 500,
@@ -268,27 +268,30 @@ function ScreenAddRoom() {
 
         <div className="field-label" style={{ marginTop: 16 }}>Icon</div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 10 }}>
-          {icons.map((id, i) => (
-            <div key={id} style={{
-              aspectRatio: "1", borderRadius: 12,
-              border: `1px solid ${i === 0 ? "var(--ring)" : "var(--border)"}`,
-              background: i === 0 ? "var(--foreground)" : "white",
-              color: i === 0 ? "white" : "var(--foreground)",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              boxShadow: i === 0 ? "0 0 0 3px rgba(24,24,27,.08)" : undefined
-            }}>
-              <svg className="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
-                {id === "sofa" && <><path d="M4 12V8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4"/><path d="M2 16a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v3h-2v-2H4v2H2v-3z"/></>}
-                {id === "bed" && <><path d="M2 14V8h7a3 3 0 0 1 3 3v1h10v6"/><path d="M2 18h20"/><circle cx="6" cy="11" r="1.5"/></>}
-                {id === "chef" && <><path d="M5 3h14v6a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4V3z"/><path d="M9 13v8M15 13v8"/></>}
-                {id === "bath" && <><path d="M3 11h18v3a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4v-3z"/><path d="M7 11V6a2 2 0 0 1 4 0"/><path d="M5 21l1-3M19 21l-1-3"/></>}
-                {id === "desk" && <><path d="M3 7h18M5 7v13M19 7v13M3 11h18"/></>}
-                {id === "tv" && <><rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 21h8M12 17v4"/></>}
-                {id === "car" && <><path d="M5 11l1.5-4h11L19 11"/><path d="M3 17v-5h18v5h-2a2 2 0 0 1-4 0H9a2 2 0 0 1-4 0H3z"/></>}
-                {id === "yard" && <><path d="M12 22V12"/><path d="M8 12a4 4 0 1 1 8 0"/><path d="M5 18h14"/></>}
-              </svg>
-            </div>
-          ))}
+          {icons.map((id, i) => {
+            const sel = i === 0;
+            return (
+              <button key={id} type="button" aria-label={id} style={{
+                aspectRatio: "1", borderRadius: 14, cursor: "pointer", padding: 0,
+                border: sel ? "1.5px solid var(--primary)" : "1px solid var(--border)",
+                background: sel ? "var(--primary-soft)" : "var(--card)",
+                color: sel ? "var(--primary)" : "var(--foreground)",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                boxShadow: sel ? "0 0 0 3px rgba(var(--primary-rgb),.18)" : undefined,
+              }}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.85" strokeLinecap="round" strokeLinejoin="round">
+                  {id === "sofa" && <><path d="M4 12V8a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v4"/><path d="M2 14a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2v2h-2v-2H6v2H4v-2a2 2 0 0 1-2-2v-3z"/><path d="M6 12v-1a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v1"/></>}
+                  {id === "bed" && <><path d="M2 18v-7a2 2 0 0 1 2-2h6a3 3 0 0 1 3 3v1h7a2 2 0 0 1 2 2v3"/><path d="M2 18h20v2"/><circle cx="6.5" cy="11.5" r="1.5"/></>}
+                  {id === "chef" && <><path d="M5 3h14v6a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4V3z"/><path d="M9 13v8M15 13v8"/><path d="M5 7h14"/></>}
+                  {id === "bath" && <><path d="M3 12h18v3a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4v-3z"/><path d="M7 12V6a2 2 0 0 1 4 0"/><path d="M5 21l1-2M19 21l-1-2"/></>}
+                  {id === "desk" && <><rect x="3" y="4" width="18" height="11" rx="2"/><path d="M2 19h20"/><path d="M9 19v-2M15 19v-2"/></>}
+                  {id === "tv" && <><rect x="3" y="5" width="18" height="13" rx="2"/><path d="M8 22h8M12 18v4"/></>}
+                  {id === "car" && <><path d="M5 11l1.6-4.5A2 2 0 0 1 8.5 5h7a2 2 0 0 1 1.9 1.5L19 11"/><path d="M3 17v-5h18v5h-2a2 2 0 0 1-4 0H9a2 2 0 0 1-4 0H3z"/><circle cx="7" cy="17" r="1.4" fill="currentColor"/><circle cx="17" cy="17" r="1.4" fill="currentColor"/></>}
+                  {id === "yard" && <><path d="M12 22V12"/><path d="M12 12c-3 0-5-2-5-5 0-1 .4-2 1-2.6.6.6 1.5 1 2.5 1 .8 0 1.6-.3 2.2-.8.6.5 1.4.8 2.3.8 1 0 1.9-.4 2.5-1 .6.6 1 1.6 1 2.6 0 3-2 5-5 5z"/><path d="M5 22h14"/></>}
+                </svg>
+              </button>
+            );
+          })}
         </div>
 
         <div className="field-label" style={{ marginTop: 20 }}>Devices in this room</div>

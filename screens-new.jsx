@@ -757,16 +757,17 @@ function ScreenWelcomePostAuth() {
 
 // ---- Edit room (sibling of Add room) ----
 function ScreenEditRoom() {
-  // Production-grade icons via Font Awesome 6 — covers common room types.
+  // Inline SVG room icons (lucide-style) — guaranteed to render in both
+  // themes; uses currentColor so contrast is always correct.
   const icons = [
-    { id: "sofa",  fa: "fa-solid fa-couch" },
-    { id: "bed",   fa: "fa-solid fa-bed" },
-    { id: "chef",  fa: "fa-solid fa-utensils" },
-    { id: "bath",  fa: "fa-solid fa-bath" },
-    { id: "desk",  fa: "fa-solid fa-laptop" },
-    { id: "tv",    fa: "fa-solid fa-tv" },
-    { id: "car",   fa: "fa-solid fa-car" },
-    { id: "yard",  fa: "fa-solid fa-tree" },
+    { id: "sofa",  svg: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.85" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12V8a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v4"/><path d="M2 14a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2v2h-2v-2H6v2H4v-2a2 2 0 0 1-2-2v-3z"/><path d="M6 12v-1a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v1"/></svg> },
+    { id: "bed",   svg: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.85" strokeLinecap="round" strokeLinejoin="round"><path d="M2 18v-7a2 2 0 0 1 2-2h6a3 3 0 0 1 3 3v1h7a2 2 0 0 1 2 2v3"/><path d="M2 18h20v2"/><circle cx="6.5" cy="11.5" r="1.5"/></svg> },
+    { id: "chef",  svg: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.85" strokeLinecap="round" strokeLinejoin="round"><path d="M5 3h14v6a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4V3z"/><path d="M9 13v8M15 13v8"/><path d="M5 7h14"/></svg> },
+    { id: "bath",  svg: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.85" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12h18v3a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4v-3z"/><path d="M7 12V6a2 2 0 0 1 4 0"/><path d="M5 21l1-2M19 21l-1-2"/><path d="M12 3v0"/></svg> },
+    { id: "desk",  svg: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.85" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="11" rx="2"/><path d="M2 19h20"/><path d="M9 19v-2M15 19v-2"/></svg> },
+    { id: "tv",    svg: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.85" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="5" width="18" height="13" rx="2"/><path d="M8 22h8M12 18v4"/></svg> },
+    { id: "car",   svg: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.85" strokeLinecap="round" strokeLinejoin="round"><path d="M5 11l1.6-4.5A2 2 0 0 1 8.5 5h7a2 2 0 0 1 1.9 1.5L19 11"/><path d="M3 17v-5h18v5h-2a2 2 0 0 1-4 0H9a2 2 0 0 1-4 0H3z"/><circle cx="7" cy="17" r="1.4" fill="currentColor"/><circle cx="17" cy="17" r="1.4" fill="currentColor"/></svg> },
+    { id: "yard",  svg: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.85" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22V12"/><path d="M12 12c-3 0-5-2-5-5 0-1 .4-2 1-2.6.6.6 1.5 1 2.5 1 .8 0 1.6-.3 2.2-.8.6.5 1.4.8 2.3.8 1 0 1.9-.4 2.5-1 .6.6 1 1.6 1 2.6 0 3-2 5-5 5z"/><path d="M5 22h14"/></svg> },
   ];
 
   return (
@@ -785,14 +786,11 @@ function ScreenEditRoom() {
                 aspectRatio: "1", borderRadius: 14, cursor: "pointer", padding: 0,
                 border: sel ? "1.5px solid var(--primary)" : "1px solid var(--border)",
                 background: sel ? "var(--primary-soft)" : "var(--card)",
+                color: sel ? "var(--primary)" : "var(--foreground)",
                 display: "flex", alignItems: "center", justifyContent: "center",
                 boxShadow: sel ? "0 0 0 3px rgba(var(--primary-rgb),.18)" : undefined,
               }}>
-                <i className={it.fa} style={{
-                  fontSize: 22,
-                  color: sel ? "var(--primary)" : "var(--foreground)",
-                  lineHeight: 1,
-                }}/>
+                {it.svg}
               </button>
             );
           })}
@@ -1180,7 +1178,7 @@ function ScreenSharingEmpty() {
       <Header title="Members" right={<button className="btn btn-outline btn-sm"><svg className="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M5 12h14" /></svg>Invite</button>} />
       <div style={{ flex: 1, padding: "0 20px 24px", display: "flex", flexDirection: "column" }}>
         <div className="card" style={{ padding: 14, background: "var(--muted)", display: "flex", alignItems: "center", gap: 12 }}>
-          <div style={{ width: 40, height: 40, borderRadius: 10, background: "white", border: "1px solid var(--border)", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+          <div style={{ width: 40, height: 40, borderRadius: 10, background: "var(--card)", color: "var(--foreground)", border: "1px solid var(--border)", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
             <svg className="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M3 11l9-8 9 8" /><path d="M5 10v10h14V10" /></svg>
           </div>
           <div style={{ flex: 1 }}>
