@@ -511,7 +511,9 @@ function ScreenMoveDevice() {
             const selected = pick === r.name;
             return (
               <button key={r.name} onClick={()=>!r.current && setPick(r.name)} disabled={r.current} className="row" style={{
-                width: "100%", border: 0, background: "transparent", textAlign: "left", cursor: r.current ? "default" : "pointer", opacity: r.current ? .5 : 1,
+                width: "100%", border: 0, background: "transparent", textAlign: "left",
+                color: "var(--foreground)", font: "inherit",
+                cursor: r.current ? "default" : "pointer", opacity: r.current ? .55 : 1,
               }}>
                 <div className="icon-wrap"><svg className="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.85" strokeLinecap="round" strokeLinejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg></div>
                 <div className="label-wrap">
@@ -520,7 +522,7 @@ function ScreenMoveDevice() {
                 </div>
                 <span aria-hidden style={{
                   width: 20, height: 20, borderRadius: 999,
-                  border: selected ? "6px solid var(--foreground)" : "1.5px solid var(--border-strong)",
+                  border: selected ? "6px solid var(--primary)" : "1.5px solid var(--border-strong)",
                   background: "var(--background)",
                   boxSizing: "border-box",
                 }}/>
