@@ -159,7 +159,7 @@ function App() {
           <DCArtboard id="home" label="Home · populated" width={375} height={812}><ScreenHome/></DCArtboard>
           <DCArtboard id="home-cluster" label="Home · active PixCluster (Pro)" width={375} height={812}><ScreenHome activeCluster/></DCArtboard>
           <DCArtboard id="home-fusion" label="Home · active PixFusion (Pro)" width={375} height={812}><ScreenHome activeFusion/></DCArtboard>
-          <DCArtboard id="home-offline" label="Home · offline (local mode)" width={375} height={812}><ScreenHome homeOffline/></DCArtboard>
+          <DCArtboard id="home-servers-down" label="Home · servers unreachable" width={375} height={812}><ScreenHome serversDown/></DCArtboard>
           <DCArtboard id="search" label="Search" width={375} height={812}><ScreenSearch/></DCArtboard>
 
           {/* Group-level sync features (controlled from home, not per-device) */}
@@ -234,6 +234,9 @@ function App() {
           <DCArtboard id="device-offline" label="Device offline" width={375} height={812}><ScreenDeviceOffline/></DCArtboard>
           <DCArtboard id="color-in-cluster" label="Color · in PixCluster (overlay)" width={375} height={812}><ScreenDeviceColor inCluster/></DCArtboard>
           <DCArtboard id="color-in-fusion" label="Color · in PixFusion (overlay)" width={375} height={812}><ScreenDeviceColor inFusion/></DCArtboard>
+          <DCArtboard id="color-primary-cluster" label="Color · primary of PixCluster" width={375} height={812}><ScreenDeviceColor isPrimaryOf="cluster"/></DCArtboard>
+          <DCArtboard id="color-primary-fusion" label="Color · primary of PixFusion" width={375} height={812}><ScreenDeviceColor isPrimaryOf="fusion"/></DCArtboard>
+          <DCArtboard id="color-cloud-down" label="Color · cloud unreachable" width={375} height={812}><ScreenDeviceColor cloudUnreachable/></DCArtboard>
           <DCArtboard id="effects" label="Effects · standard" width={375} height={812}><ScreenDeviceEffects/></DCArtboard>
           <DCArtboard id="effects-music" label="Effects · Music sync ON" width={375} height={812}><ScreenDeviceEffects music/></DCArtboard>
           <DCArtboard id="palettes" label="Palettes" width={375} height={812}><ScreenPalettes/></DCArtboard>

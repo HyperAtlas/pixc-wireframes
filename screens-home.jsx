@@ -119,12 +119,46 @@ function DeviceCard({ name, room, color, kind = "bulb", on = true, brightness = 
   );
 }
 
-function ScreenHome({ activeCluster = false, activeFusion = false, homeOffline = false } = {}) {
+function ScreenHome({ activeCluster = false, activeFusion = false, serversDown = false } = {}) {
   const [plan] = (window.usePixcPlan ? window.usePixcPlan() : ["free", () => {}]);
   const isPro = plan === "pro";
   const activeGroup = activeCluster ? { kind: "cluster", title: "Living Room PixCluster", room: "Living room", primary: "PixC Lyt", devices: 4, effect: "Aurora", brightness: 65 }
                     : activeFusion  ? { kind: "fusion",  title: "Movie night PixFusion", room: "Living room", primary: "PixC Lyt", devices: 6, effect: "Sunset", brightness: 78 }
                     : null;
+
+  // Servers unreachable — full-screen state replacing the home body.
+  if (serversDown) {
+    return (
+      <Phone>
+        <div style={{ padding: "8px 16px 0", display: "flex", alignItems: "center", justifyContent: "space-between", flex: "0 0 auto" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <div style={{ width: 36, height: 36, borderRadius: 999, background: "var(--muted)", display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 14, fontWeight: 600 }}>R</div>
+            <div>
+              <div className="muted" style={{ fontSize: 11 }}>Good evening, Rayon</div>
+              <div style={{ fontSize: 15, fontWeight: 600, letterSpacing: "-0.005em" }}>Rayon's apartment</div>
+            </div>
+          </div>
+        </div>
+        <div className="empty-hero">
+          <span className="ic-disc" style={{ color: "var(--destructive)" }}>
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12.5a10 10 0 0 1 14 0"/><path d="M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19.5" r=".9" fill="currentColor" stroke="none"/><path d="M3 3l18 18"/></svg>
+          </span>
+          <div className="h2">Can't reach PixC servers</div>
+          <div className="muted" style={{ fontSize: 14, marginTop: 4, maxWidth: 280 }}>
+            Your home is still online — we just can't sync to the cloud right now. AI, automations, and remote access are paused.
+          </div>
+          <div className="card" style={{ width: "100%", maxWidth: 320, marginTop: 22, padding: 14 }}>
+            <div className="muted small mono" style={{ marginBottom: 6 }}>Error · CLOUD_UNREACHABLE</div>
+            <div className="small">Last successful contact 4 min ago. Local control still works.</div>
+          </div>
+          <div style={{ display: "flex", gap: 8, marginTop: 18, width: "100%", maxWidth: 320 }}>
+            <button className="btn btn-primary btn-lg btn-block" style={{ flex: 1 }}>Retry</button>
+            <button className="btn btn-outline btn-lg" style={{ flex: 1 }}>Use local mode</button>
+          </div>
+        </div>
+      </Phone>
+    );
+  }
   const rooms = [
     { id: "all", label: "All", count: 12, icon: <svg className="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>, active: true },
     { id: "lr", label: "Living", count: 4, icon: <svg className="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12V8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4"/><path d="M2 16a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v3h-2v-2H4v2H2v-3z"/></svg> },
@@ -189,32 +223,16 @@ function ScreenHome({ activeCluster = false, activeFusion = false, homeOffline =
       </div>
 
       <div style={{ padding: "10px 20px 0" }}>
-        {homeOffline ? (
-          <div className="card" style={{
-            padding: "10px 12px", display: "flex", alignItems: "center", gap: 10,
-            background: "rgba(220,38,38,.06)",
-            border: "1px solid rgba(220,38,38,.18)",
-            color: "var(--destructive)",
-          }}>
-            <span style={{ width: 8, height: 8, borderRadius: 999, background: "var(--destructive)", boxShadow: "0 0 0 4px rgba(220,38,38,.18)" }}/>
-            <div style={{ flex: 1, fontSize: 12 }}>
-              <span style={{ fontWeight: 600 }}>Working offline · local mode</span>
-              <span className="muted" style={{ color: "var(--destructive)", opacity: .8 }}> · cloud unreachable, AI &amp; cloud automations paused</span>
-            </div>
-            <button className="btn btn-ghost btn-sm" style={{ height: 24, padding: "0 8px", fontSize: 12, color: "var(--destructive)" }}>Retry</button>
+        <div className="card" style={{ padding: "10px 12px", display: "flex", alignItems: "center", gap: 10, background: "var(--muted)" }}>
+          <span className="iot-dot"/>
+          <div style={{ flex: 1, fontSize: 12 }}>
+            <span style={{ fontWeight: 500 }}>8 online</span>
+            <span className="muted"> · 1 local · </span>
+            <span className="mono" style={{ fontWeight: 500 }}>2.3 kWh</span>
+            <span className="muted"> today</span>
           </div>
-        ) : (
-          <div className="card" style={{ padding: "10px 12px", display: "flex", alignItems: "center", gap: 10, background: "var(--muted)" }}>
-            <span className="iot-dot"/>
-            <div style={{ flex: 1, fontSize: 12 }}>
-              <span style={{ fontWeight: 500 }}>8 online</span>
-              <span className="muted"> · 1 local · </span>
-              <span className="mono" style={{ fontWeight: 500 }}>2.3 kWh</span>
-              <span className="muted"> today</span>
-            </div>
-            <button className="btn btn-ghost btn-sm" style={{ height: 24, padding: "0 8px", fontSize: 12 }}>Details</button>
-          </div>
-        )}
+          <button className="btn btn-ghost btn-sm" style={{ height: 24, padding: "0 8px", fontSize: 12 }}>Details</button>
+        </div>
       </div>
 
       {/* Rooms */}
@@ -228,15 +246,17 @@ function ScreenHome({ activeCluster = false, activeFusion = false, homeOffline =
         </div>
       </div>
 
-      {/* Active group card — only when Pro user has an active cluster/fusion.
-          Shown above the Sync tiles to signal the room/group is being driven
-          as a unit. Mirrors device-card aesthetic with the same Living
-          room / Online status pills as a device. */}
-      {activeGroup && isPro && (
-        <div style={{ padding: "16px 20px 0" }}>
+      {/* Sync section — when an active cluster/fusion exists (Pro), it
+          surfaces as a wide card at the top of this section. Otherwise
+          two tiles for PixFusion / PixCluster (locked for Free). */}
+      <div style={{ padding: "16px 20px 0" }}>
+        <div className="h3" style={{ marginBottom: 8 }}>Sync</div>
+
+        {activeGroup && isPro && (
           <div className="card iot-card" style={{
             padding: 14,
             display: "flex", flexDirection: "column", gap: 10,
+            marginBottom: 10,
           }}>
             <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
@@ -256,7 +276,7 @@ function ScreenHome({ activeCluster = false, activeFusion = false, homeOffline =
               <label className="switch"><input type="checkbox" defaultChecked/><span className="track"><span className="thumb"/></span></label>
             </div>
 
-            {/* Status pills — match the device topbar's Living room / Online style */}
+            {/* Status pills — same Living room / Online treatment as a device. */}
             <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
               <span style={{
                 display: "inline-flex", alignItems: "center", gap: 5,
@@ -281,14 +301,8 @@ function ScreenHome({ activeCluster = false, activeFusion = false, homeOffline =
               </span>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Sync features — entry to PixFusion & PixCluster.
-          Free: tiles disabled with a PixC+ label inside.
-          Pro: tiles enabled. */}
-      <div style={{ padding: "16px 20px 0" }}>
-        <div className="h3" style={{ marginBottom: 8 }}>Sync</div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
           {[
             { id: "fusion",  t: "PixFusion",  s: "Fuse multiple devices into one sync.", icon: "fa-solid fa-layer-group" },

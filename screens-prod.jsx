@@ -477,7 +477,7 @@ function ScreenAppLockResetSuccess() {
 function ScreenAppLockSetupIntro() {
   const [method, setMethod] = React.useState("both");
   const options = [
-    { id: "bio",     t: "Biometric only",      s: "Face ID or Touch ID at app launch.",
+    { id: "bio",     t: "Biometric only",      s: "Use your phone's biometrics at app launch.",
       icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><circle cx="12" cy="11" r="3"/><path d="M8 17c1-2 2.5-3 4-3s3 1 4 3"/></svg> },
     { id: "pin",     t: "4-digit passcode",    s: "Required if biometrics aren't available.",
       icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> },
@@ -601,7 +601,7 @@ function ScreenAppLockSetupSuccess() {
           <div style={{ textAlign: "center" }}>
             <div className="h2">App-lock is on</div>
             <div className="muted" style={{ fontSize: 14, marginTop: 6, maxWidth: 280 }}>
-              You'll need Face ID or your passcode to open PixC from now on.
+              You'll need biometrics or your passcode to open PixC from now on.
             </div>
           </div>
         </div>

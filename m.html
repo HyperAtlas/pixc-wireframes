@@ -382,7 +382,7 @@ const SECTIONS = [
     { id: "home",                  label: "Home · populated",               render: () => <ScreenHome/> },
     { id: "home-cluster",          label: "Home · active PixCluster (Pro)", render: () => <ScreenHome activeCluster/> },
     { id: "home-fusion",           label: "Home · active PixFusion (Pro)",  render: () => <ScreenHome activeFusion/> },
-    { id: "home-offline",          label: "Home · offline (local mode)",    render: () => <ScreenHome homeOffline/> },
+    { id: "home-servers-down",     label: "Home · servers unreachable",     render: () => <ScreenHome serversDown/> },
     { id: "search",                label: "Search",                         render: () => <ScreenSearch/> },
 
     { id: "combination-sync",      label: "PixFusion · setup (PixC+)",      render: () => <ScreenCombinationSync/> },
@@ -445,6 +445,9 @@ const SECTIONS = [
     { id: "device-offline",        label: "Device offline",                 render: () => <ScreenDeviceOffline/> },
     { id: "color-in-cluster",      label: "Color · in PixCluster (overlay)", render: () => <ScreenDeviceColor inCluster/> },
     { id: "color-in-fusion",       label: "Color · in PixFusion (overlay)",  render: () => <ScreenDeviceColor inFusion/> },
+    { id: "color-primary-cluster", label: "Color · primary of PixCluster",   render: () => <ScreenDeviceColor isPrimaryOf="cluster"/> },
+    { id: "color-primary-fusion",  label: "Color · primary of PixFusion",    render: () => <ScreenDeviceColor isPrimaryOf="fusion"/> },
+    { id: "color-cloud-down",      label: "Color · cloud unreachable",       render: () => <ScreenDeviceColor cloudUnreachable/> },
     { id: "effects",               label: "Effects · standard",             render: () => <ScreenDeviceEffects/> },
     { id: "effects-music",         label: "Effects · Music sync ON",        render: () => <ScreenDeviceEffects music/> },
     { id: "palettes",              label: "Palettes",                       render: () => <ScreenPalettes/> },

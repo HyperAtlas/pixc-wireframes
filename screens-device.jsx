@@ -138,13 +138,18 @@ function DeviceTopBar({ name = "PixC Lyt", room = "Living room", section = null,
                 color: "var(--primary)",
                 border: "1px solid color-mix(in srgb, var(--primary) 35%, transparent)",
               }}>
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                  {group.kind === "cluster"
-                    ? <><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></>
-                    : <><path d="M5 5h6v6H5zM13 13h6v6h-6zM5 13l6 6M19 5l-6 6"/></>
-                  }
-                </svg>
-                {group.kind === "cluster" ? "PixCluster" : "PixFusion"}
+                {group.primary
+                  ? <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.5 6 6.5.5-5 4.5 1.5 6.5L12 16l-5.5 3.5L8 13 3 8.5l6.5-.5z"/></svg>
+                  : <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                      {group.kind === "cluster"
+                        ? <><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></>
+                        : <><path d="M5 5h6v6H5zM13 13h6v6h-6zM5 13l6 6M19 5l-6 6"/></>
+                      }
+                    </svg>
+                }
+                {group.primary
+                  ? `Primary · ${group.kind === "cluster" ? "PixCluster" : "PixFusion"}`
+                  : group.kind === "cluster" ? "PixCluster" : "PixFusion"}
               </span>
             )}
           </div>
@@ -249,19 +254,41 @@ function StatusGrid({ effect = "Solid", music = false, palette = "Breeze", segme
 }
 
 // === Main device control (Figma Frame 17) ===
-function ScreenDeviceColor({ online = true, lightSyncOn = false, locked = false, peek = true, inCluster = false, inFusion = false }) {
+function ScreenDeviceColor({ online = true, lightSyncOn = false, locked = false, peek = true, inCluster = false, inFusion = false, isPrimaryOf = null, cloudUnreachable = false }) {
   const peekItem = STANDARD_EFFECTS[1]; // Breeze — represents what's running
   const controllers = locked ? null : [
     { name: "Aria", color: "#ec4899" },
     { name: "Sam",  color: "#3b82f6" },
   ];
-  // Status pill in the topbar reflects cluster/fusion membership.
-  const group = inCluster ? { kind: "cluster", name: "Living room" }
+  // Status pill in the topbar reflects cluster/fusion membership OR
+  // shows a Primary indicator when this device drives a group.
+  const group = isPrimaryOf === "cluster" ? { kind: "cluster", name: "Living room", primary: true }
+              : isPrimaryOf === "fusion"  ? { kind: "fusion",  name: "Movie night", primary: true }
+              : inCluster ? { kind: "cluster", name: "Living room" }
               : inFusion  ? { kind: "fusion",  name: "Movie night" }
               : null;
   return (
     <Phone>
       <DeviceTopBar online={online} showStatus controllers={controllers} group={group}/>
+
+      {/* Cloud-unreachable banner — local control still works. */}
+      {cloudUnreachable && (
+        <div style={{ padding: "8px 20px 0" }}>
+          <div className="card" style={{
+            padding: "10px 12px", display: "flex", alignItems: "center", gap: 10,
+            background: "rgba(220,38,38,.06)",
+            border: "1px solid rgba(220,38,38,.18)",
+            color: "var(--destructive)",
+          }}>
+            <span style={{ width: 8, height: 8, borderRadius: 999, background: "var(--destructive)", boxShadow: "0 0 0 4px rgba(220,38,38,.18)" }}/>
+            <div style={{ flex: 1, fontSize: 11.5, lineHeight: 1.4 }}>
+              <span style={{ fontWeight: 600 }}>Cloud unreachable</span>
+              <span style={{ opacity: .85 }}> · using local control. AI &amp; remote access paused.</span>
+            </div>
+            <button className="btn btn-ghost btn-sm" style={{ height: 24, padding: "0 8px", fontSize: 11, color: "var(--destructive)" }}>Retry</button>
+          </div>
+        </div>
+      )}
 
       {/* Peek — live preview of what the controller is rendering on the
           strip's currently-active segment. The 10-cell strip is a sample
@@ -571,7 +598,21 @@ function ScreenDeviceColor({ online = true, lightSyncOn = false, locked = false,
                   cursor: "pointer",
                 }}>{n}</button>
               ))}
-              <button style={{ width: 48, height: 48, borderRadius: 999, background: "transparent", border: 0, color: "rgba(255,255,255,.55)", fontSize: 9, fontWeight: 500, letterSpacing: ".04em", cursor: "pointer" }}>FACE ID</button>
+              <button aria-label="Use biometrics" title="Biometrics" style={{
+                width: 48, height: 48, borderRadius: 999,
+                background: "rgba(255,255,255,.08)", border: "1px solid rgba(255,255,255,.12)",
+                color: "#fafafa", cursor: "pointer",
+                display: "inline-flex", alignItems: "center", justifyContent: "center",
+              }}>
+                {/* Fingerprint — generic biometrics symbol (Face ID / Touch ID / Android equivalents) */}
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M5 11a7 7 0 0 1 14 0v3"/>
+                  <path d="M8 12a4 4 0 0 1 8 0v4"/>
+                  <path d="M12 12v5a3 3 0 0 0 3 3"/>
+                  <path d="M3 14c.6-3 2.4-5 5-6"/>
+                  <path d="M21 14c-.4 2-1.5 4-3 5"/>
+                </svg>
+              </button>
               <button style={{ width: 48, height: 48, borderRadius: 999, background: "rgba(255,255,255,.08)", border: "1px solid rgba(255,255,255,.12)", color: "#fff", fontSize: 18, fontWeight: 500, cursor: "pointer" }}>0</button>
               <button aria-label="Delete" style={{ width: 48, height: 48, borderRadius: 999, background: "transparent", border: 0, color: "rgba(255,255,255,.7)", display: "inline-flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
                 <svg width="18" height="14" viewBox="0 0 24 18" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M22 3H8L2 9l6 6h14a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1z"/><path d="M18 6l-6 6M12 6l6 6"/></svg>
@@ -869,10 +910,6 @@ function ScreenAppLock({ mode = "biometric", wrong = false }) {
             </button>
             <div className="muted small" style={{ marginTop: 16 }}>Touch sensor to unlock</div>
             <div style={{ marginTop: 28, display: "flex", gap: 10 }}>
-              <button className="btn btn-ghost btn-sm" style={{ color: "var(--muted-foreground)" }}>
-                <svg className="ic-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg>
-                Use Face ID
-              </button>
               <button className="btn btn-outline btn-sm">Use passcode</button>
             </div>
           </>
