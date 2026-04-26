@@ -416,6 +416,7 @@ const SECTIONS = [
     { id: "color-locked",          label: "Color · device locked",          render: () => <ScreenDeviceColor online={false} locked/> },
     { id: "color-lightsync",       label: "Color · LightSync overlay",      render: () => <ScreenDeviceColor lightSyncOn/> },
     { id: "device-offline",        label: "Device offline",                 render: () => <ScreenDeviceOffline/> },
+    { id: "color-in-cluster",      label: "Color · in PixCluster",          render: () => <ScreenDeviceColor inCluster/> },
     { id: "effects",               label: "Effects · standard",             render: () => <ScreenDeviceEffects/> },
     { id: "effects-music",         label: "Effects · Music sync ON",        render: () => <ScreenDeviceEffects music/> },
     { id: "palettes",              label: "Palettes",                       render: () => <ScreenPalettes/> },
@@ -453,7 +454,7 @@ const SECTIONS = [
     { id: "sub-manage-pro",        label: "Subscription · current PixC+",   render: () => <ScreenSubscriptionManage plan="pro"/> },
     { id: "sub-cancel",            label: "Subscription · cancel confirm",  render: () => <ScreenCancelConfirm/> },
     { id: "combination-sync",      label: "Combination Sync (PixC+)",       render: () => <ScreenCombinationSync/> },
-    { id: "grouped-sync",          label: "Grouped Light Syncing (PixC+)",  render: () => <ScreenGroupedLightSync/> },
+    { id: "grouped-sync",          label: "PixCluster (PixC+)",             render: () => <ScreenGroupedLightSync/> },
     { id: "upsell-homes",          label: "Upsell · 3rd home",              render: () => <ScreenUpsellHomes/> },
     { id: "upsell-members",        label: "Upsell · 4th member",            render: () => <ScreenUpsellMembers/> },
     { id: "upsell-automations",    label: "Upsell · 11th automation",       render: () => <ScreenUpsellAutomations/> },
@@ -461,7 +462,7 @@ const SECTIONS = [
     { id: "upsell-energy",         label: "Upsell · energy beyond 14d",     render: () => <ScreenUpsellEnergy/> },
     { id: "upsell-notifications",  label: "Upsell · notifications past 7d", render: () => <ScreenUpsellNotifications/> },
     { id: "upsell-combination",    label: "Upsell · Combination Sync",      render: () => <ScreenUpsellCombinationSync/> },
-    { id: "upsell-grouped",        label: "Upsell · Grouped Sync",          render: () => <ScreenUpsellGroupedSync/> },
+    { id: "upsell-grouped",        label: "Upsell · PixCluster",            render: () => <ScreenUpsellGroupedSync/> },
   ]},
 ];
 

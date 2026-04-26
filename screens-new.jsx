@@ -869,8 +869,8 @@ function ScreenTwotoAI() {
       </div>
 
       {/* Quota counter */}
-      <div style={{ padding: "6px 16px 0", display: "flex", alignItems: "center", gap: 8 }}>
-        <span className="mono small" style={{ flex: 1, color: "var(--muted-foreground)", letterSpacing: ".06em" }}>
+      <div style={{ padding: "4px 16px 0", display: "flex", alignItems: "center", gap: 8 }}>
+        <span className="mono" style={{ flex: 1, color: "var(--muted-foreground)", letterSpacing: ".04em", fontSize: 10.5 }}>
           <span style={{ color: "var(--foreground)", fontWeight: 600 }}>{used.toLocaleString()}</span>
           <span> / {cap.toLocaleString()} this week · resets Mon</span>
         </span>
@@ -1014,8 +1014,8 @@ function ScreenTwotoAIEmpty() {
         </button>
       </div>
 
-      <div style={{ padding: "6px 16px 0", display: "flex", alignItems: "center", gap: 8 }}>
-        <span className="mono small" style={{ flex: 1, color: "var(--muted-foreground)", letterSpacing: ".06em" }}>
+      <div style={{ padding: "4px 16px 0", display: "flex", alignItems: "center", gap: 8 }}>
+        <span className="mono" style={{ flex: 1, color: "var(--muted-foreground)", letterSpacing: ".04em", fontSize: 10.5 }}>
           <span style={{ color: "var(--foreground)", fontWeight: 600 }}>0</span>
           <span> / {cap.toLocaleString()} this week · resets Mon</span>
         </span>

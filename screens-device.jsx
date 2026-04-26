@@ -231,7 +231,7 @@ function StatusGrid({ effect = "Solid", music = false, palette = "Breeze", segme
 }
 
 // === Main device control (Figma Frame 17) ===
-function ScreenDeviceColor({ online = true, lightSyncOn = false, locked = false, peek = true }) {
+function ScreenDeviceColor({ online = true, lightSyncOn = false, locked = false, peek = true, inCluster = false }) {
   const peekItem = STANDARD_EFFECTS[1]; // Breeze — represents what's running
   const controllers = locked ? null : [
     { name: "Aria", color: "#ec4899" },
@@ -240,6 +240,35 @@ function ScreenDeviceColor({ online = true, lightSyncOn = false, locked = false,
   return (
     <Phone>
       <DeviceTopBar online={online} showStatus controllers={controllers}/>
+
+      {/* PixCluster banner — shown when this device is part of an active
+          cluster. Any change here propagates to every member. */}
+      {inCluster && (
+        <div style={{ padding: "8px 20px 0" }}>
+          <div className="card iot-card" style={{
+            padding: "10px 12px", display: "flex", alignItems: "center", gap: 10,
+          }}>
+            <span style={{
+              width: 30, height: 30, borderRadius: 9,
+              background: "var(--primary-soft)", color: "var(--primary)",
+              display: "inline-flex", alignItems: "center", justifyContent: "center",
+              flexShrink: 0,
+            }}>
+              <i className="fa-solid fa-object-group" style={{ fontSize: 14 }}/>
+            </span>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontSize: 12, fontWeight: 600, display: "flex", alignItems: "center", gap: 6 }}>
+                Living room PixCluster
+                {window.LockBadge && <window.LockBadge size="sm"/>}
+              </div>
+              <div className="muted" style={{ fontSize: 11, lineHeight: 1.35, marginTop: 1 }}>
+                Changes here change the effect, palette, and brightness for all 4 grouped devices.
+              </div>
+            </div>
+            <button className="btn btn-ghost btn-sm" style={{ height: 26, padding: "0 8px", fontSize: 11, color: "var(--muted-foreground)" }}>Manage</button>
+          </div>
+        </div>
+      )}
 
       {/* Peek — live preview of what the controller is rendering on the
           strip's currently-active segment. The 10-cell strip is a sample
@@ -1144,7 +1173,7 @@ function ScreenLightSyncSetup() {
           {[
             { id: "combo",   t: "Combination Sync",       s: "Pair multiple devices in one sync session.",
               icon: <i className="fa-solid fa-layer-group" style={{ fontSize: 16 }}/> },
-            { id: "grouped", t: "Grouped Light Syncing",  s: "Sync a room or group as one target.",
+            { id: "grouped", t: "PixCluster",  s: "Group a room with a primary — others inherit settings.",
               icon: <i className="fa-solid fa-object-group" style={{ fontSize: 16 }}/> },
           ].map(m => (
             <button key={m.id} className="card" style={{

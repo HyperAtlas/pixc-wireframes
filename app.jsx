@@ -194,6 +194,7 @@ function App() {
           <DCArtboard id="color-locked" label="Color · device locked" width={375} height={812}><ScreenDeviceColor online={false} locked/></DCArtboard>
           <DCArtboard id="color-lightsync" label="Color · LightSync overlay" width={375} height={812}><ScreenDeviceColor lightSyncOn/></DCArtboard>
           <DCArtboard id="device-offline" label="Device offline" width={375} height={812}><ScreenDeviceOffline/></DCArtboard>
+          <DCArtboard id="color-in-cluster" label="Color · in PixCluster" width={375} height={812}><ScreenDeviceColor inCluster/></DCArtboard>
           <DCArtboard id="effects" label="Effects · standard" width={375} height={812}><ScreenDeviceEffects/></DCArtboard>
           <DCArtboard id="effects-music" label="Effects · Music sync ON" width={375} height={812}><ScreenDeviceEffects music/></DCArtboard>
           <DCArtboard id="palettes" label="Palettes" width={375} height={812}><ScreenPalettes/></DCArtboard>
@@ -232,7 +233,7 @@ function App() {
           <DCArtboard id="sub-manage-pro" label="Subscription · current PixC+" width={375} height={812}><ScreenSubscriptionManage plan="pro"/></DCArtboard>
           <DCArtboard id="sub-cancel" label="Subscription · cancel confirm" width={375} height={812}><ScreenCancelConfirm/></DCArtboard>
           <DCArtboard id="combination-sync" label="Combination Sync (PixC+)" width={375} height={812}><ScreenCombinationSync/></DCArtboard>
-          <DCArtboard id="grouped-sync" label="Grouped Light Syncing (PixC+)" width={375} height={812}><ScreenGroupedLightSync/></DCArtboard>
+          <DCArtboard id="grouped-sync" label="PixCluster (PixC+)" width={375} height={812}><ScreenGroupedLightSync/></DCArtboard>
           <DCArtboard id="upsell-homes" label="Upsell · adding 3rd home" width={375} height={812}><ScreenUpsellHomes/></DCArtboard>
           <DCArtboard id="upsell-members" label="Upsell · 4th member" width={375} height={812}><ScreenUpsellMembers/></DCArtboard>
           <DCArtboard id="upsell-automations" label="Upsell · 11th automation" width={375} height={812}><ScreenUpsellAutomations/></DCArtboard>
@@ -240,7 +241,7 @@ function App() {
           <DCArtboard id="upsell-energy" label="Upsell · energy beyond 14d" width={375} height={812}><ScreenUpsellEnergy/></DCArtboard>
           <DCArtboard id="upsell-notifications" label="Upsell · notifications beyond 7d" width={375} height={812}><ScreenUpsellNotifications/></DCArtboard>
           <DCArtboard id="upsell-combination" label="Upsell · Combination Sync tap" width={375} height={812}><ScreenUpsellCombinationSync/></DCArtboard>
-          <DCArtboard id="upsell-grouped" label="Upsell · Grouped Sync tap" width={375} height={812}><ScreenUpsellGroupedSync/></DCArtboard>
+          <DCArtboard id="upsell-grouped" label="Upsell · PixCluster tap" width={375} height={812}><ScreenUpsellGroupedSync/></DCArtboard>
         </DCSection>
 
       </DesignCanvas>

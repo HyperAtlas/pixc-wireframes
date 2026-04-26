@@ -114,7 +114,7 @@ function UpsellModal({ feature, currentUsage, limit, onClose }) {
     energy:          { title: "12 months of energy history", body: "Free shows the last 14 days. PixC+ keeps a full year, with weekly and monthly breakdowns.", icon: <i className="fa-solid fa-bolt"/> },
     notifications:   { title: "90 days of notifications", body: "Free keeps the last 7 days. PixC+ retains 90 — handy when you're piecing together what happened.", icon: <i className="fa-solid fa-bell"/> },
     combinationSync: { title: "Combination Sync · PixC+", body: "Pair multiple devices in one LightSync session — e.g. a strip behind the TV + bulbs behind the couch all reacting together.", icon: <i className="fa-solid fa-layer-group"/> },
-    groupedSync:     { title: "Grouped Light Syncing · PixC+", body: "Treat an entire room or group as one sync target. Add or remove devices without re-mapping.", icon: <i className="fa-solid fa-object-group"/> },
+    groupedSync:     { title: "PixCluster · PixC+", body: "Group a room as one sync target. Pick a primary device — its settings (effect, palette, brightness) are inherited by every device in the cluster.", icon: <i className="fa-solid fa-object-group"/> },
   }[feature] || { title: "Upgrade to PixC+", body: "Unlock the full PixC experience.", icon: <i className="fa-solid fa-crown"/> };
 
   return (
@@ -193,15 +193,15 @@ function UpsellModal({ feature, currentUsage, limit, onClose }) {
 // and the "see full comparison" footer.
 function ScreenPaywall() {
   const rows = [
-    { lever: "Devices",                    free: "Unlimited",  pro: "Unlimited" },
-    { lever: "Homes",                      free: "2",          pro: "Unlimited" },
-    { lever: "Family members",             free: "3 total",    pro: "6 max" },
-    { lever: "Automations",                free: "10",         pro: "Unlimited" },
-    { lever: "PixC AI prompts",            free: "30 / week",  pro: "1,000 / week" },
-    { lever: "Energy history",             free: "14 days",    pro: "12 months" },
-    { lever: "Notifications history",      free: "7 days",     pro: "90 days" },
-    { lever: "Combination Sync",           free: "—",          pro: "✓" },
-    { lever: "Grouped Light Syncing",      free: "—",          pro: "✓" },
+    { lever: "Devices",            free: "Unlimited", pro: "Unlimited" },
+    { lever: "Homes",              free: "2",         pro: "Unlimited" },
+    { lever: "Family members",     free: "3",         pro: "6" },
+    { lever: "Automations",        free: "10",        pro: "Unlimited" },
+    { lever: "AI prompts / week",  free: "30",        pro: "1,000" },
+    { lever: "Energy history",     free: "14 d",      pro: "12 mo" },
+    { lever: "Notifications",      free: "7 d",       pro: "90 d" },
+    { lever: "Combination Sync",   free: "—",         pro: "✓" },
+    { lever: "PixCluster",         free: "—",         pro: "✓" },
   ];
   return (
     <Phone>
@@ -249,10 +249,10 @@ function ScreenPaywall() {
         <div className="muted small" style={{ textTransform: "uppercase", letterSpacing: ".06em", fontWeight: 500, marginBottom: 8 }}>What you get</div>
         <div className="card" style={{ padding: 0, overflow: "hidden", marginBottom: 18 }}>
           <div style={{
-            display: "grid", gridTemplateColumns: "1.4fr 1fr 1fr",
+            display: "grid", gridTemplateColumns: "1.7fr 0.9fr 0.9fr",
             background: "var(--muted)",
             padding: "10px 14px",
-            fontSize: 11, fontWeight: 600, letterSpacing: ".06em", textTransform: "uppercase", color: "var(--muted-foreground)",
+            fontSize: 10.5, fontWeight: 600, letterSpacing: ".06em", textTransform: "uppercase", color: "var(--muted-foreground)",
           }}>
             <span>Feature</span>
             <span style={{ textAlign: "right" }}>Free</span>
@@ -260,15 +260,15 @@ function ScreenPaywall() {
           </div>
           {rows.map((r, i) => (
             <div key={i} style={{
-              display: "grid", gridTemplateColumns: "1.4fr 1fr 1fr",
+              display: "grid", gridTemplateColumns: "1.7fr 0.9fr 0.9fr",
               alignItems: "center",
-              padding: "11px 14px",
+              padding: "10px 14px",
               fontSize: 13,
               borderTop: i === 0 ? "0" : "1px solid var(--border)",
             }}>
               <span style={{ fontWeight: 500 }}>{r.lever}</span>
-              <span className="muted mono" style={{ textAlign: "right", fontVariantNumeric: "tabular-nums" }}>{r.free}</span>
-              <span className="mono" style={{ textAlign: "right", color: "var(--primary)", fontWeight: 600, fontVariantNumeric: "tabular-nums" }}>{r.pro}</span>
+              <span className="muted mono" style={{ textAlign: "right", fontVariantNumeric: "tabular-nums", fontSize: 12.5, whiteSpace: "nowrap" }}>{r.free}</span>
+              <span className="mono" style={{ textAlign: "right", color: "var(--primary)", fontWeight: 600, fontVariantNumeric: "tabular-nums", fontSize: 12.5, whiteSpace: "nowrap" }}>{r.pro}</span>
             </div>
           ))}
         </div>
@@ -355,25 +355,71 @@ function ScreenSubscriptionManage({ plan = "pro" }) {
           )}
         </div>
 
-        <div className="muted small" style={{ textTransform: "uppercase", letterSpacing: ".06em", fontWeight: 500, marginBottom: 8 }}>What's included</div>
-        <div className="card" style={{ padding: 14 }}>
-          {[
-            "Unlimited homes and devices",
-            "Up to 6 family members",
-            "Unlimited automations",
-            "1,000 AI prompts / week",
-            "12 months of energy history",
-            "90 days of notifications",
-            "Combination Sync + Grouped Light Syncing",
-          ].map((t, i) => (
-            <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "6px 0" }}>
-              <span style={{ width: 18, height: 18, borderRadius: 999, background: "color-mix(in srgb, var(--primary) 18%, transparent)", color: "var(--primary)", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
-                <i className="fa-solid fa-check" style={{ fontSize: 9 }}/>
-              </span>
-              <span style={{ fontSize: 13.5 }}>{t}</span>
+        {isPro ? (
+          <>
+            <div className="muted small" style={{ textTransform: "uppercase", letterSpacing: ".06em", fontWeight: 500, marginBottom: 8 }}>What's included</div>
+            <div className="card" style={{ padding: 14 }}>
+              {[
+                "Unlimited homes and devices",
+                "Up to 6 family members",
+                "Unlimited automations",
+                "1,000 AI prompts / week",
+                "12 months of energy history",
+                "90 days of notifications",
+                "Combination Sync + PixCluster",
+              ].map((t, i) => (
+                <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "6px 0" }}>
+                  <span style={{ width: 18, height: 18, borderRadius: 999, background: "color-mix(in srgb, var(--primary) 18%, transparent)", color: "var(--primary)", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+                    <i className="fa-solid fa-check" style={{ fontSize: 9 }}/>
+                  </span>
+                  <span style={{ fontSize: 13.5 }}>{t}</span>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </>
+        ) : (
+          <>
+            <div className="muted small" style={{ textTransform: "uppercase", letterSpacing: ".06em", fontWeight: 500, marginBottom: 8 }}>Your Free plan</div>
+            <div className="card" style={{ padding: 14, marginBottom: 18 }}>
+              {[
+                { t: "2 homes",                ok: true  },
+                { t: "3 family members",       ok: true  },
+                { t: "10 automations",         ok: true  },
+                { t: "30 AI prompts / week",   ok: true  },
+                { t: "14 days energy history", ok: true  },
+                { t: "7 days notifications",   ok: true  },
+                { t: "Unlimited devices, all colors, all effects", ok: true },
+              ].map((row, i) => (
+                <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "6px 0" }}>
+                  <span style={{ width: 18, height: 18, borderRadius: 999, background: "var(--muted)", color: "var(--success)", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+                    <i className="fa-solid fa-check" style={{ fontSize: 9 }}/>
+                  </span>
+                  <span style={{ fontSize: 13.5 }}>{row.t}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="muted small" style={{ textTransform: "uppercase", letterSpacing: ".06em", fontWeight: 500, marginBottom: 8 }}>Unlock with PixC+</div>
+            <div className="card" style={{ padding: 14 }}>
+              {[
+                "Unlimited homes",
+                "Up to 6 family members",
+                "Unlimited automations",
+                "1,000 AI prompts / week",
+                "12 months energy history",
+                "90 days notifications",
+                "Combination Sync + PixCluster",
+              ].map((t, i) => (
+                <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "6px 0" }}>
+                  <span style={{ width: 18, height: 18, borderRadius: 999, background: "color-mix(in srgb, var(--primary) 14%, transparent)", color: "var(--primary)", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+                    <i className="fa-solid fa-lock" style={{ fontSize: 9 }}/>
+                  </span>
+                  <span style={{ fontSize: 13.5 }}>{t}</span>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
       </div>
     </Phone>
   );
@@ -405,7 +451,7 @@ function ScreenCancelConfirm() {
             "Members 4–6 will be removed",
             "Automations 11+ will pause",
             "Energy history older than 14 days will be hidden",
-            "Combination Sync and Grouped Light Syncing will turn off",
+            "Combination Sync and PixCluster will turn off",
           ].map((t, i, arr) => (
             <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 0", borderTop: i === 0 ? "0" : "1px solid var(--border)" }}>
               <span style={{ width: 6, height: 6, borderRadius: 999, background: "var(--destructive)", flexShrink: 0 }}/>
@@ -486,7 +532,10 @@ function ScreenCombinationSync() {
   );
 }
 
-// ----- Grouped Light Syncing setup ---------------------------------------
+// ----- PixCluster setup ---------------------------------------
+// Group a room into one sync target. The user picks (1) a room/scene and
+// (2) a primary device. The primary's effect / palette / brightness is
+// the source of truth — every device in the cluster inherits it.
 function ScreenGroupedLightSync() {
   const groups = [
     { name: "Living room",  count: 4, sample: ["#a855f7","#22c55e","#06b6d4","#facc15"], selected: true },
@@ -494,16 +543,23 @@ function ScreenGroupedLightSync() {
     { name: "Hallway",      count: 2, sample: ["#3b82f6","#facc15"],                    selected: false },
     { name: "Movie night",  count: 6, sample: ["#7c3aed","#1e1b4b","#3b82f6","#06b6d4","#a855f7","#1e1b4b"], scene: true, selected: false },
   ];
+  // Devices belonging to the selected group — first one is the primary.
+  const devices = [
+    { name: "PixC Lyt",  room: "Living room", color: "#a855f7", kind: "bulb",  primary: true  },
+    { name: "Strip 01",  room: "Living room", color: "#22c55e", kind: "strip", primary: false },
+    { name: "Lamp",      room: "Living room", color: "#06b6d4", kind: "lamp",  primary: false },
+    { name: "Bulb 02",   room: "Living room", color: "#facc15", kind: "bulb",  primary: false },
+  ];
   return (
     <Phone>
-      <Header title="Grouped Light Syncing" right={<LockBadge/>}/>
-      <div style={{ flex: 1, overflow: "auto", padding: "0 20px 24px" }}>
+      <Header title="PixCluster" right={<LockBadge/>}/>
+      <div style={{ flex: 1, overflow: "auto", padding: "0 20px 100px" }}>
         <div className="muted" style={{ fontSize: 13, marginBottom: 14 }}>
-          Treat a room or scene as a single sync target. Color samples are blended across all devices in the group.
+          Group a room into one sync target. Pick a primary device — its settings (effect, palette, brightness) are inherited by every device in the cluster.
         </div>
 
-        <div className="muted small" style={{ textTransform: "uppercase", letterSpacing: ".06em", fontWeight: 500, marginBottom: 8 }}>Pick a group</div>
-        <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 14 }}>
+        <div className="muted small" style={{ textTransform: "uppercase", letterSpacing: ".06em", fontWeight: 500, marginBottom: 8 }}>1 · Pick a room or scene</div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 18 }}>
           {groups.map((g, i) => (
             <button key={i} className="card" style={{
               padding: 14, display: "flex", alignItems: "center", gap: 12,
@@ -533,13 +589,59 @@ function ScreenGroupedLightSync() {
           ))}
         </div>
 
-        <div className="muted small" style={{ textTransform: "uppercase", letterSpacing: ".06em", fontWeight: 500, marginBottom: 8 }}>Sync mode</div>
+        {/* Step 2 — pick the primary (source of truth) */}
+        <div className="muted small" style={{ textTransform: "uppercase", letterSpacing: ".06em", fontWeight: 500, marginBottom: 8 }}>2 · Primary device</div>
+        <div className="muted small" style={{ marginBottom: 10 }}>
+          The cluster inherits the primary's effect, palette, and brightness. Tap any device to make it the new primary.
+        </div>
+        <div className="card" style={{ marginBottom: 18 }}>
+          {devices.map((d, i) => (
+            <button key={i} className="row" style={{
+              width: "100%", border: 0, background: "transparent", textAlign: "left", cursor: "pointer", font: "inherit",
+            }}>
+              <div className="icon-wrap" style={{ background: d.color + "22", color: d.color }}>
+                <i className={
+                  d.kind === "bulb"  ? "fa-solid fa-lightbulb" :
+                  d.kind === "strip" ? "fa-solid fa-grip-lines" :
+                  d.kind === "lamp"  ? "fa-solid fa-lamp" :
+                                       "fa-solid fa-square"
+                }/>
+              </div>
+              <div className="label-wrap">
+                <div className="t" style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                  {d.name}
+                  {d.primary && (
+                    <span style={{
+                      display: "inline-flex", alignItems: "center", gap: 3,
+                      padding: "1px 6px", borderRadius: 999,
+                      background: "var(--primary-soft)",
+                      color: "var(--primary)",
+                      border: "1px solid color-mix(in srgb, var(--primary) 35%, transparent)",
+                      fontSize: 9.5, fontWeight: 700, letterSpacing: ".06em",
+                    }}>
+                      <i className="fa-solid fa-star" style={{ fontSize: 7 }}/> PRIMARY
+                    </span>
+                  )}
+                </div>
+                <div className="s">{d.primary ? "Source of truth" : "Inherits primary"}</div>
+              </div>
+              <span aria-hidden style={{
+                width: 20, height: 20, borderRadius: 999,
+                border: d.primary ? "6px solid var(--primary)" : "1.5px solid var(--border-strong)",
+                background: "var(--background)", boxSizing: "border-box",
+              }}/>
+            </button>
+          ))}
+        </div>
+
+        {/* Step 3 — sync mode */}
+        <div className="muted small" style={{ textTransform: "uppercase", letterSpacing: ".06em", fontWeight: 500, marginBottom: 8 }}>3 · Sync mode</div>
         <div className="card" style={{ marginBottom: 18 }}>
           <div className="row">
             <div className="icon-wrap" style={{ background: "var(--primary-soft)", color: "var(--primary)" }}>
               <i className="fa-solid fa-blender-phone" style={{ fontSize: 14 }}/>
             </div>
-            <div className="label-wrap"><div className="t">Average · blend</div><div className="s">Group shows the average color across the screen.</div></div>
+            <div className="label-wrap"><div className="t">Average · blend</div><div className="s">Cluster shows the average color across the screen.</div></div>
             <span aria-hidden style={{
               width: 20, height: 20, borderRadius: 999,
               border: "6px solid var(--primary)",
@@ -557,7 +659,7 @@ function ScreenGroupedLightSync() {
           </div>
         </div>
 
-        <button className="btn btn-primary btn-lg btn-block">Save group sync</button>
+        <button className="btn btn-primary btn-lg btn-block">Save PixCluster</button>
       </div>
       <FigPillNav active="extras"/>
     </Phone>
@@ -642,7 +744,7 @@ function ScreenUpsellCombinationSync() {
 function ScreenUpsellGroupedSync() {
   return (
     <Phone>
-      <UpsellBackdrop title="LightSync" summary="Tap on Grouped Light Syncing"/>
+      <UpsellBackdrop title="LightSync" summary="Tap on PixCluster"/>
       <UpsellModal feature="groupedSync"/>
     </Phone>
   );

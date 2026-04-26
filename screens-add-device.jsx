@@ -224,6 +224,30 @@ function ScreenPairSuccess() {
           <svg className="ic-sm chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
         </div>
       </div>
+
+      {/* New-device promo: 1 month of PixC+ on the house */}
+      <div className="card iot-card" style={{ marginTop: 12, padding: "12px 14px", display: "flex", gap: 12, alignItems: "center" }}>
+        <span style={{
+          width: 36, height: 36, borderRadius: 10,
+          background: "linear-gradient(180deg, color-mix(in srgb, var(--primary) 22%, var(--card)), var(--card))",
+          border: "1px solid color-mix(in srgb, var(--primary) 35%, var(--border))",
+          color: "var(--primary)",
+          display: "inline-flex", alignItems: "center", justifyContent: "center",
+          flexShrink: 0,
+          boxShadow: "0 0 14px -3px color-mix(in srgb, var(--primary) 60%, transparent)",
+        }}>
+          <i className="fa-solid fa-gift" style={{ fontSize: 14 }}/>
+        </span>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ fontSize: 13, fontWeight: 600, display: "flex", alignItems: "center", gap: 6 }}>
+            1 month of PixC+ on us
+          </div>
+          <div className="muted" style={{ fontSize: 11.5, marginTop: 2, lineHeight: 1.4 }}>
+            Set up your new device today and unlock multi-home, AI, and PixCluster free for 30 days.
+          </div>
+        </div>
+        <button className="btn btn-primary btn-sm" style={{ flexShrink: 0 }}>Claim</button>
+      </div>
     </AddDeviceShell>
   );
 }
